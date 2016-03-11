@@ -7,10 +7,10 @@ window.addEventListener('DOMContentLoaded', function() {
 	engine.runRenderLoop(function() {
 		scene.render();
 	});
-});
 
-window.addEventListener('resize', function() {
-    engine.resize();
+	window.addEventListener('resize', function() {
+		engine.resize();
+	});
 });
 
 var createScene = function() {
