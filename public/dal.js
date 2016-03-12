@@ -1,10 +1,10 @@
 (function(w,dd,doc) {
 
 	var bgimage = new Image();
-	bgimage.onload = function() {
-
-	}
-	bgimage.src = "";
+	/*bgimage.onload = function() {
+		dd.push({title:'Grundlager',data:bgimage.src});
+	}*/
+	bgimage.src = "res/densitet_bitmap.png";
 
 var imgsize = {
 	x:1024,
@@ -102,6 +102,7 @@ var calcFunc = {
 };
 
 var dal = {
+	useBackgroundData:true,
 	'getLayers':function(cb) {
 		var ret = [];
 		dd.forEach(function(v,i) {
@@ -143,6 +144,9 @@ var dal = {
 			layerData.forEach(function(currentLayer) {
 				tot+=currentLayer.hdl.getResult();
 			});
+			var bgdata = getData(bgimage);
+			if (dal.useBackgroundData)
+				tot+=bgdata.data.data[i];
 			//var tv = Math.round((s/(j)));//Math.max(0,Math.round((s))); //-(255/arr.length)
 			resultData.data[i] = tot;
 			resultData.data[i+3] = tot;
