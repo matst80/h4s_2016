@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Parser</title>
-	
+	<script src="gausskruger.js"></script>
 	
 	<style>
       html, body {
@@ -18,10 +18,10 @@
 </head>
 <body>
  
-<div id="map"></div>
+<div id="emap"></div>
     
     <script>
-
+    	swedish_params("sweref_99_tm");
       // This example adds a red rectangle to a map.
 
       function initMap() {
@@ -48,12 +48,13 @@
       }
     </script>
     
-    <script async defer
+    <scripta async defer
     src="https://maps.googleapis.com/maps/api/js?callback=initMap">
-    </script>
+    </scripta>
 
 
  <canvas id="canvas" width="1024" height="1024"></canvas>
+ <div id="up"></div>
  <script src="jsonparser.js"></script>
 </body>
 </html>

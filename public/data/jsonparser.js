@@ -21,7 +21,8 @@ var factor = {
 var parsers = {
 	'facebook': {
 		getarray:function(data) {
-			return data;
+			//console.log(data);
+			return data.data;
 		},
 		rowdelegate:function(v,rowid) {
 			var ve = v.venue;
@@ -66,7 +67,8 @@ var parsers = {
 		},
 		rowdelegate:function(v,rowid) {
 			if (v.geometry) {
-				var co = v.geometry.coordinates;
+				var co = grid_to_geodetic.apply(this,v.geometry.coordinates.reverse());
+				//console.log(co,v.geometry.coordinates);
 				return {
 					lat:co[0],
 					lon:co[1]
@@ -106,6 +108,10 @@ var parseQueue = [
 		file:'dagligvarubutiker.js',
 		parser:'geojson'
 	},
+	{
+		file:'drivmedel.js',
+		parser:'geojson'
+	}
 ];
 
 
@@ -122,37 +128,39 @@ function parse(data,parser) {
 			if (nd.lat>=latbound.min && nd.lat<=latbound.max && nd.lon>=lonbound.min && nd.lon<=lonbound.max) 
 				ret.push(nd);
 			else
-				console.log('out of bounds: '+parser,v );
+				console.log('out of bounds');
 		}
 	});
 	return ret;
 }
 
 function processQue(q) {
+	var prt = document.getElementById('up');
 	q.forEach(function(v,i) {
-		console.log(v);
+		
 		getFile(v.file,function(data) {
 			var points = parse(data,v.parser);	
 			v.points = points;
-			console.log(v);
+			console.log(v.file,points.length);
+			plotEvents(points);
+			var span = document.createElement('span');
+			span.innerHTML = v.file;
+			var image = new Image();
+			image.src = canvas.toDataURL();
+			prt.appendChild(span);
+			prt.appendChild(image);
 
 		});
 	});
 }
 
-processQue(parseQueue);
-
-
-
-
-//console.log(fq);
 var image = new Image();
 image.src = 'dutt.png';
-image.onload = function() {
+
 	var canvas = document.getElementById('canvas');
 	var ctx = canvas.getContext('2d');
-	var imageData = ctx.getImageData(0,0,imgsize.x, imgsize.y);
-
+	
+	processQue(parseQueue);
 
 	function convItem(e) {
 		var dlat = ((e.lat-latbound.min)/factor.lat);
@@ -164,32 +172,26 @@ image.onload = function() {
 	}
 
 
-	function plotEvents(arr,imageData) {
-		var id = imageData.data;
+	function plotEvents(arr) {
+		
 		ctx.fillStyle = "#000";
 		ctx.fillRect(0,0,imgsize.x,imgsize.y);
 		ctx.globalCompositeOperation = "lighter";
 		arr.forEach(function(v,i) {
-			if (v.lat>=latbound.min && v.lat<=latbound.max && v.lon>=lonbound.min && v.lon<=lonbound.max) {
-				//console.log('in lat',v);
+			
 				
 					var pixel = convItem(v);
-					/*console.log('in bounds, pixel',pixel);
-					var base = (pixel.y*imgsize.x+pixel.x)*4;
-					id[base] = 255;
-					id[base+1] = 0;
-					id[base+2] = 0;
-					id[base+3] = 255;*/
-					ctx.drawImage(image,pixel.x,pixel.y,16,16);
+					if (pixel.x>0 && pixel.x<imgsize.x && pixel.y>0 && pixel.y<imgsize.y)
+						ctx.drawImage(image,pixel.x,pixel.y,16,16);
 					
-				
-			}
-			else console.log('out of bounds',v);
+			
 		});
-		//ctx.putImageData(imageData, 0, 0);
+		
 	}
-	//plotEvents(ed,imageData);
-	//plotEvents(fq,imageData);
-	//plotEvents(bib,imageData);
-	//parsebibl()
-}
+	
+
+
+
+
+
+
