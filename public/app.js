@@ -180,24 +180,7 @@ window.addEventListener('DOMContentLoaded', function() {
 			}
 
 
-
-
-
-
-
-
-
 		}
-
-
-
-
-
-
-
-
-
-
 
 
 		var queuedHeightmap = null;
@@ -242,19 +225,6 @@ window.addEventListener('DOMContentLoaded', function() {
 			debugging  = debugging_el.checked;
 		});
 
-
-
-
-
-
-
-
-
-
-
-
-
-		// return the created scene
 		return scene;
 	}
 
