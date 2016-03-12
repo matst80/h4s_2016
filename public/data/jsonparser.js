@@ -140,7 +140,7 @@ var parseQueue = [
 		file:'facebookevents.js',
 		parser:'facebook'
 	},
-	{	
+	{
 		title:'Offentlig service',
 		file:'bilbiotek.js',
 		parser:'libraries'
@@ -152,6 +152,7 @@ var parseQueue = [
 	},
 	{
 		file:'drivmedel.js',
+		title:'Drivmedel',
 		parser:'geojson'
 	}
 ];
