@@ -161,7 +161,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 			} else if (fadestate == 'b-visible') {
 
-				fadetimer += 0.01;
+				fadetimer += 0.1;
 				if (fadetimer >= 1.0) {
 
 					console.log('Fadestate: Idle delay, restart.');
