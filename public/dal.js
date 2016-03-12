@@ -4,6 +4,7 @@
 	bgimage.onload = function() {
 
 	}
+	bgimage.src = "";
 
 var imgsize = {
 	x:1024,
@@ -42,7 +43,7 @@ function mergeImage(img,cb) {
 	img.ctx.putImageData(img.data,0,0);
 	var ret = (img.img)?img.img:new Image();
 	console.log('do merge');
-	
+
 	ret.onload = function() {
 		console.log('loaded');
 		cb(img);
@@ -62,7 +63,6 @@ var calcFunc = {
 				return this.total/this.points;
 			};
 			this.pixelDeligate = function(val) {
-				
 				this.total+=val/this.layers;
 				this.points++;
 			};
@@ -78,12 +78,10 @@ var calcFunc = {
 			};
 			this.pixelDeligate = function(val) {
 				//var val = currentLayer.layerdata.data.data[pixelPos];
-					
 				this.total-=val/this.layers;
 				this.points++;
 				//return val;
 			};
-		
 	},
 	'*':function() {
 			this.init = function(totallayers) {
@@ -96,12 +94,10 @@ var calcFunc = {
 			};
 			this.pixelDeligate = function(val) {
 				//var val = currentLayer.layerdata.data.data[pixelPos];
-					
 				this.total*=val/this.layers;
 				this.points+=10;
 				//return val;
 			};
-		
 	}
 };
 
@@ -125,12 +121,10 @@ var dal = {
 			var imgdata = getData(img,size);
 			cb(imgdata);
 		});
-	}, 
-	'calculateDiversity':function(layerData,resultData,cb) { 
-		//console.log(layerData);
+	},
+	'calculateDiversity':function(layerData,resultData,cb) {
 		var totlen = layerData[0].layerdata.data.data.length;
 
-		
 
 		for(var i=0;i<totlen;i+=4) {
 			//var j=0, s = 0;
@@ -138,17 +132,12 @@ var dal = {
 				currentLayer.hdl.init(layerData.length);
 			});
 			pos.forEach(function(offsetNumber) {
-				
 				layerData.forEach(function(currentLayer) {
-					
 					var pixelPos = i + (offsetNumber * 4);
-					
 					if (pixelPos > 0 && pixelPos < totlen) {
 						currentLayer.hdl.pixelDeligate(currentLayer.layerdata.data.data[pixelPos]);
-						
 					}
 				});
-				
 			});
 			var tot = 0;
 			layerData.forEach(function(currentLayer) {
@@ -163,14 +152,11 @@ var dal = {
 	'getDiversity':function(layers,cb) {
 		var idata = 0;
 
-		
-
 		function afterLoad() {
 			var resultImage = new Image();
 			var resultData = getData(resultImage,divx);
 			dal.calculateDiversity(layers,resultData.data,function() {
-				//console.log(resultData.data);
-				mergeImage(resultData,cb);	
+				mergeImage(resultData,cb);
 			});
 		}
 
@@ -230,7 +216,7 @@ dal.getLayers(function(d) {
 			opt.innerHTML = i;
 			sel.appendChild(opt);
 		}
-		
+
 		li.appendChild(span);
 		li.appendChild(inp);
 		li.appendChild(sel);
