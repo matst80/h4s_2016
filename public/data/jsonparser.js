@@ -104,8 +104,8 @@ function convItem(e) {
 	var dlat = ((e.lat-latbound.min)/factor.lat);
 	var dlon = ((e.lon-lonbound.min)/factor.lon);
 	return {
-		y:imgsize.y-Math.round(dlat*imgsize.y+Math.random()*10),
-		x:Math.round(dlon*imgsize.x+Math.random()*10),
+		y:imgsize.y-Math.round(dlat*imgsize.y),
+		x:Math.round(dlon*imgsize.x),
 	};
 }
 
@@ -128,45 +128,53 @@ var parseQueue = [
 		title:'Näringsliv',
 		file:'foursquare_new2.js',
 		image:'dutt.png',
-		parser:'foursquare'
+		parser:'foursquare',
+		multiple:0.33,
 	},
 	{
 		title:'Trafikolyckor',
 		file:'olyckor.js',
-		parser:'trafik'
+		parser:'trafik',
+		multiple:0.5,
 	},
 	{
 		title:'Evenemang',
 		file:'facebookevents.js',
-		parser:'facebook'
+		image:'tunadutt.png',
+		parser:'facebook',
+		multiple: 0.5,
 	},
 	{
 		title:'Offentlig service',
 		file:'bilbiotek.js',
-		parser:'libraries'
+		parser:'libraries',
+		multiple: 0.5,
 	},
 	{
-		title:'Näringsliv',
+		title:'Dagligvarubutiken',
 		file:'dagligvarubutiker.js',
-		parser:'geojson'
+		parser:'geojson',
+		multiple:0.2,
 	},
 	{
 		file:'drivmedel.js',
 		title:'Drivmedel',
-		parser:'geojson'
+		parser:'geojson',
+		multiple:1.0,
 	}
 ];
 
 
 
 
-function parse(data,parser,ictx,image) {
+function parse(data,parser,ictx,image,multiple) {
 	//console.log(data,parser,parsers);
 	var p = parsers[parser];
 	var baseArray = p.getarray(data);
 	var ret = { points: []};
 	//
 	
+	ictx.globalAlpha = 1.0;
 	ictx.fillStyle = "#000";
 	ictx.fillRect(0,0,imgsize.x,imgsize.y);
 	
@@ -180,18 +188,25 @@ function parse(data,parser,ictx,image) {
 			if (nd.lat>=latbound.min && nd.lat<=latbound.max && nd.lon>=lonbound.min && nd.lon<=lonbound.max) {
 				ret.points.push(nd);
 				var pixel = convItem(nd);
+
+				pixel.x -= 5.0;
+				pixel.y -= 5.0;
+				pixel.x += 10.0 * Math.random();
+				pixel.y += 10.0 * Math.random();
 				
 				if (pixel.x>=0 && pixel.x<=imgsize.x && pixel.y>=0 && pixel.y<=imgsize.y)
-					ictx.drawImage(image,pixel.x,pixel.y,64,64);
+					ictx.globalAlpha = multiple;
+					ictx.drawImage(image,pixel.x-128,pixel.y-128,256,256);
 				}
 			//else
 			//	console.log('out of bounds');
 		}
 	});
+	ictx.globalAlpha = 1.0;
 	ictx.globalCompositeOperation = "source-over";
 	//var id = ictx.getImageData(0,0,imgsize.x,imgsize.y);
 
-	
+
 	return ret;
 }
 
@@ -340,7 +355,7 @@ function processQue(q) {
 				//console.log('start parse',data,v.parser,ctx,img);
 				var cvs =  createContext(imgsize.x,imgsize.y);
 				var ctx =  cvs.getContext('2d');
-				var res = parse(data,v.parser,ctx,img);
+				var res = parse(data,v.parser,ctx,img,v.multiple);
 				
 				v.extend(res);
 
@@ -355,7 +370,7 @@ function processQue(q) {
 
 				divCtx.drawImage(outimg,0,0,divx,divy);
 				var calcData = divCtx.getImageData(0,0,divx,divy);
-				getDiversity(calcData);
+				// getDiversity(calcData);
 				divCtx.putImageData(calcData,0,0);
 				var crap = new Image();
 				crap.src = divCvx.toDataURL();
@@ -364,45 +379,18 @@ function processQue(q) {
 				//outimg.src = cvs.toDataURL();
 				v.imgData = cvs.toDataURL();
 
-					
+
 
 
 				//prt.appendChild(outimg);
-				var span = document.createElement('label');
-				span.innerHTML = v.file;
-				var cb = document.createElement('input');
-				cb.type = 'checkbox';
-				cb.value = i;
-				cb.addEventListener('change',function() {
-					
-					
-					var empty = [].filter.call( document.querySelectorAll('input[type=checkbox]'), function( el ) {
-					   return el.checked;
-					});
-					var vals = [];
-					empty.forEach(function(v) {
-						vals.push(q[v.value].calcData.data);
-					});
-					//console.log(vals);
-					var cv = createContext(divx,divy);
-					var tx = cv.getContext('2d');
-					var idd = tx.getImageData(0,0,divx,divy);
-
-					calcDivSums(vals,idd);
-					
-					tx.putImageData(idd,0,0);
-
-					
-
-
-					prt.appendChild(getImage(cv,true));
-
-				},false);
-
+				var span = document.createElement('h3');
+				span.innerHTML = v.title;
 				window.pq = parseQueue;
+
+				document.getElementById('dummy').value = 'var compileddata = ' + JSON.stringify(parseQueue);
+
 				prt.appendChild(span);
-				prt.appendChild(cb);
-				//prt.appendChild(outimg);
+				prt.appendChild(outimg);
 			}
 			img.src = v.image||'dutt.png';
 		});
