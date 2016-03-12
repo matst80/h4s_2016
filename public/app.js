@@ -208,6 +208,19 @@ window.addEventListener('DOMContentLoaded', function() {
 			console.log('updateHeightmap', source);
 			queuedHeightmap = new BABYLON.Texture(source, scene);
 		}
+		window.updateHeightmap = function(img) {
+			//updateHeightmap()
+
+			queuedHeightmap = new BABYLON.DynamicTexture("dynamic texture", {
+ width: 1024,
+ height: 1024
+}, scene, true);
+			//console.log('dyntext',new BABYLON.Texture('res/dummydata1.png', scene));
+			var textureContext = queuedHeightmap.getContext();
+			//console.log(textureContext);
+			textureContext.drawImage(img.img,0,0,1024,1024);
+			queuedHeightmap.update();
+		};
 
 		shaderMaterial.setTexture('img1', null);
 		shaderMaterial.setTexture('img2', null);
