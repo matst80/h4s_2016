@@ -48,23 +48,25 @@ function mergeImage(img,cb) {
 
 var calcFunc = {
 	'+':function() {
-			this.init = function() {
+			this.init = function(totallayers) {
 				this.total = 0;
 				this.points = 0;
+				this.layers = totallayers;
 			};
 			this.getResult = function() {
 				return this.total/this.points;
 			};
 			this.pixelDeligate = function(val) {
 				
-				this.total+=val;
+				this.total+=val/this.layers;
 				this.points++;
 			};
 		},
 	'-':function() {
-			this.init = function() {
+			this.init = function(totallayers) {
 				this.total = 0;
 				this.points = 0;
+				this.layers = totallayers;
 			};
 			this.getResult = function() {
 				return this.total/this.points;
@@ -72,16 +74,17 @@ var calcFunc = {
 			this.pixelDeligate = function(val) {
 				//var val = currentLayer.layerdata.data.data[pixelPos];
 					
-				this.total-=val;
+				this.total-=val/this.layers;
 				this.points++;
 				//return val;
 			};
 		
 	},
 	'*':function() {
-			this.init = function() {
+			this.init = function(totallayers) {
 				this.total = 0;
 				this.points = 0;
+				this.layers = totallayers;
 			};
 			this.getResult = function() {
 				return this.total/this.points;
@@ -89,7 +92,7 @@ var calcFunc = {
 			this.pixelDeligate = function(val) {
 				//var val = currentLayer.layerdata.data.data[pixelPos];
 					
-				this.total*=val;
+				this.total*=val/this.layers;
 				this.points+=10;
 				//return val;
 			};
@@ -127,7 +130,7 @@ var dal = {
 		for(var i=0;i<totlen;i+=4) {
 			//var j=0, s = 0;
 			layerData.forEach(function(currentLayer) {
-				currentLayer.hdl.init();
+				currentLayer.hdl.init(layerData.length);
 			});
 			pos.forEach(function(offsetNumber) {
 				
@@ -181,31 +184,37 @@ var dal = {
 
 w.dal = dal;
 var bcnt = doc.getElementById('buttoncnt');
+var bouncyBoobs;
 dal.getLayers(function(d) {
 	d.forEach(function(v) {
 		var li = doc.createElement('li');
 		var sel = doc.createElement('select');
 		var inp = doc.createElement('input');
 		var span = doc.createElement('span');
-		span.innerHTML = 'BAJS? '+v.title;
+		span.innerHTML = v.title;
 		inp.value = v.idx;
 		inp.type = 'checkbox';
-		function updateSelectedLayers() {
-			var empty = [].filter.call( document.querySelectorAll('input[type=checkbox]'), function( el ) {
-			   return el.checked;
-			});
-			var vals = [];
-			empty.forEach(function(v) {
-				var type = v.nextSibling.value;
-				vals.push({idx:d[v.value].idx,type:type});
-			});
-			dal.getDiversity(vals,function(d) {
-				
-				updateHeightmap(d);
-				
-			});
+		function updateSelectedLayers(ev) {
+			console.log('vill ha ny data');
+			if (bouncyBoobs)
+				clearTimeout(bouncyBoobs);
+			bouncyBoobs = setTimeout(function() {
+				console.log('NU GEGERERAR VIU');
+				var empty = [].filter.call( document.querySelectorAll('input[type=checkbox]'), function( el ) {
+				   return el.checked;
+				});
+				var vals = [];
+				empty.forEach(function(v) {
+					var type = v.nextSibling.value;
+					vals.push({idx:d[v.value].idx,type:type});
+				});
+				dal.getDiversity(vals,function(d) {
+					updateHeightmap(d);
+				});
+			},700);
 		}
 		inp.addEventListener('change',updateSelectedLayers,false);
+		sel.addEventListener('change',updateSelectedLayers,false);
 		for(var i in calcFunc) {
 			var v = calcFunc[i];
 			var opt = doc.createElement('option');
