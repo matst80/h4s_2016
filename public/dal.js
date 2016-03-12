@@ -1,5 +1,10 @@
 (function(w,dd,doc) {
 
+	var bgimage = new Image();
+	bgimage.onload = function() {
+
+	}
+
 var imgsize = {
 	x:1024,
 	y:1024
@@ -184,6 +189,7 @@ var dal = {
 
 w.dal = dal;
 var bcnt = doc.getElementById('buttoncnt');
+var cogs = doc.getElementById('cogs');
 var bouncyBoobs;
 dal.getLayers(function(d) {
 	d.forEach(function(v) {
@@ -208,7 +214,9 @@ dal.getLayers(function(d) {
 					var type = v.nextSibling.value;
 					vals.push({idx:d[v.value].idx,type:type});
 				});
+				cogs.classList.add('fa-spin');
 				dal.getDiversity(vals,function(d) {
+					cogs.classList.remove('fa-spin');
 					updateHeightmap(d);
 				});
 			},700);
