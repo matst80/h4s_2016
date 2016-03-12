@@ -1,11 +1,11 @@
-(function(w,dd) {
+(function(w,dd,doc) {
 
 var imgsize = {
 	x:1024,
 	y:1024
 };
 
-var divfactor = 10;
+var divfactor = 5;
 var divy = Math.round(imgsize.y/divfactor);
 var divx = Math.round(imgsize.x/divfactor);
 
@@ -46,6 +46,57 @@ function mergeImage(img,cb) {
 	//cb(img);
 }
 
+var calcFunc = {
+	'+':function() {
+			this.init = function() {
+				this.total = 0;
+				this.points = 0;
+			};
+			this.getResult = function() {
+				return this.total/this.points;
+			};
+			this.pixelDeligate = function(val) {
+				
+				this.total+=val;
+				this.points++;
+			};
+		},
+	'-':function() {
+			this.init = function() {
+				this.total = 0;
+				this.points = 0;
+			};
+			this.getResult = function() {
+				return this.total/this.points;
+			};
+			this.pixelDeligate = function(val) {
+				//var val = currentLayer.layerdata.data.data[pixelPos];
+					
+				this.total-=val;
+				this.points++;
+				//return val;
+			};
+		
+	},
+	'*':function() {
+			this.init = function() {
+				this.total = 0;
+				this.points = 0;
+			};
+			this.getResult = function() {
+				return this.total/this.points;
+			};
+			this.pixelDeligate = function(val) {
+				//var val = currentLayer.layerdata.data.data[pixelPos];
+					
+				this.total*=val;
+				this.points+=10;
+				//return val;
+			};
+		
+	}
+};
+
 var dal = {
 	'getLayers':function(cb) {
 		var ret = [];
@@ -68,11 +119,16 @@ var dal = {
 		});
 	}, 
 	'calculateDiversity':function(layerData,resultData,cb) { 
+		//console.log(layerData);
+		var totlen = layerData[0].layerdata.data.data.length;
+
 		
-		var totlen = layerData[0].data.data.length;
 
 		for(var i=0;i<totlen;i+=4) {
-			var j=0, s = 0;
+			//var j=0, s = 0;
+			layerData.forEach(function(currentLayer) {
+				currentLayer.hdl.init();
+			});
 			pos.forEach(function(offsetNumber) {
 				
 				layerData.forEach(function(currentLayer) {
@@ -80,38 +136,42 @@ var dal = {
 					var pixelPos = i + (offsetNumber * 4);
 					
 					if (pixelPos > 0 && pixelPos < totlen) {
+						currentLayer.hdl.pixelDeligate(currentLayer.layerdata.data.data[pixelPos]);
 						
-						var val = currentLayer.data.data[pixelPos];
-					
-						s+=val;
-						j++;
 					}
 				});
 				
 			});
-			
-			var tv = Math.round((s/(j)));//Math.max(0,Math.round((s))); //-(255/arr.length)
-			resultData.data[i] = 255;
-			resultData.data[i+3] = tv;
+			var tot = 0;
+			layerData.forEach(function(currentLayer) {
+				tot+=currentLayer.hdl.getResult();
+			});
+			//var tv = Math.round((s/(j)));//Math.max(0,Math.round((s))); //-(255/arr.length)
+			resultData.data[i] = tot;
+			resultData.data[i+3] = tot;
 		}
 		cb();
 	},
 	'getDiversity':function(layers,cb) {
-		var idata = [];
+		var idata = 0;
+
+		
 
 		function afterLoad() {
 			var resultImage = new Image();
 			var resultData = getData(resultImage,divx);
-			dal.calculateDiversity(idata,resultData.data,function() {
-				console.log(resultData.data);
+			dal.calculateDiversity(layers,resultData.data,function() {
+				//console.log(resultData.data);
 				mergeImage(resultData,cb);	
 			});
 		}
 
 		layers.forEach(function(v) {
-			dal.getImageData(v,function(layerdata) {
-				idata.push(layerdata);
-				if (idata.length == layers.length) {
+			v.hdl = new calcFunc[v.type||'+']();
+			dal.getImageData(v.idx,function(layerdata) {
+				idata++;
+				v.layerdata = layerdata;
+				if (idata == layers.length) {
 					afterLoad();
 				}
 			},divx);
@@ -120,10 +180,50 @@ var dal = {
 };
 
 w.dal = dal;
+var bcnt = doc.getElementById('buttoncnt');
+dal.getLayers(function(d) {
+	d.forEach(function(v) {
+		var li = doc.createElement('li');
+		var sel = doc.createElement('select');
+		var inp = doc.createElement('input');
+		var span = doc.createElement('span');
+		span.innerHTML = 'BAJS? '+v.title;
+		inp.value = v.idx;
+		inp.type = 'checkbox';
+		function updateSelectedLayers() {
+			var empty = [].filter.call( document.querySelectorAll('input[type=checkbox]'), function( el ) {
+			   return el.checked;
+			});
+			var vals = [];
+			empty.forEach(function(v) {
+				var type = v.nextSibling.value;
+				vals.push({idx:d[v.value].idx,type:type});
+			});
+			dal.getDiversity(vals,function(d) {
+				
+				updateHeightmap(d);
+				
+			});
+		}
+		inp.addEventListener('change',updateSelectedLayers,false);
+		for(var i in calcFunc) {
+			var v = calcFunc[i];
+			var opt = doc.createElement('option');
+			opt.value = i;
+			opt.innerHTML = i;
+			sel.appendChild(opt);
+		}
+		
+		li.appendChild(span);
+		li.appendChild(inp);
+		li.appendChild(sel);
+		bcnt.appendChild(li);
+	});
+});
 
-dal.getDiversity([0,1,2],function(d) {
+dal.getDiversity([{idx:0,type:'*'},{idx:0,type:'*'},{idx:0,type:''}],function(d) {
 	console.log(d);
 	updateHeightmap(d);
 	document.body.appendChild(d.img);
 });
-})(window,compileddata);
+})(window,compileddata,document);
