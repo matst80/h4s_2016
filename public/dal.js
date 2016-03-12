@@ -1,10 +1,10 @@
 (function(w,dd,doc) {
 
-	var bgimage = new Image();
-	/*bgimage.onload = function() {
-		dd.push({title:'Grundlager',data:bgimage.src});
-	}*/
-	bgimage.src = "res/densitet_bitmap.png";
+var bgimage = new Image();
+bgimage.onload = function() {
+	loaded:true;
+}
+bgimage.src = "res/densitet_bitmap.png";
 
 var imgsize = {
 	x:1024,
@@ -144,9 +144,13 @@ var dal = {
 			layerData.forEach(function(currentLayer) {
 				tot+=currentLayer.hdl.getResult();
 			});
-			var bgdata = getData(bgimage);
-			if (dal.useBackgroundData)
-				tot+=bgdata.data.data[i];
+
+			if (dal.useBackgroundData) {
+				if (bgimage && bgimage.loaded) {
+					var bgdata = getData(bgimage);
+					tot+=bgdata.data.data[i];
+				}
+			}
 			//var tv = Math.round((s/(j)));//Math.max(0,Math.round((s))); //-(255/arr.length)
 			resultData.data[i] = tot;
 			resultData.data[i+3] = tot;
