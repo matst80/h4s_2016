@@ -275,4 +275,56 @@ window.addEventListener('DOMContentLoaded', function() {
 	window.addEventListener('resize', function() {
 		engine.resize();
 	});
+
+	/* jquery.js */
+	/* jquery.velocity.js */
+	var buttons = [false, false, false, false, false, false];
+
+	// Animate two separate transform properties: rotateZ and translateX.
+	$(".buttons div").on("mouseover",function(e){
+		if($(this).parent().hasClass("right")){
+		   	$(this).velocity({
+				scale: 1.05,
+				translateX: -20,
+				height: 100
+		    }, 100);
+		}
+		else{
+			$(this).velocity({
+				scale: 1.05,
+				translateX: 20,
+				height: 100
+		    }, 100);
+		}
+	});
+
+	$(".buttons div").on("mouseleave",function(e){
+		$(this).velocity({
+			scale: 1,
+			translateX: 0,
+			height: 100
+	    }, 100);
+	});
+
+	$(".buttons div").on("click",function(e){
+		var index = $(this).index();
+		console.log($(this).parent().hasClass("right"));
+		if($(this).parent().hasClass("right")){
+			index+= 3;
+		}
+		buttons[index] = !buttons[index];
+		console.log(buttons);
+		if(buttons[index]){
+			$(this).velocity({
+				backgroundColorGreen: "100%",
+				opacity: 1.0
+	    	}, 100);
+		}
+		else{
+			$(this).velocity({
+				backgroundColorGreen: "93%",
+				opacity: 0.5
+	    	}, 100);
+		}
+	});
 });
