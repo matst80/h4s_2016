@@ -75,7 +75,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		var T = 0;
 		scene.registerBeforeRender(function () {
 			// torus.rotation.x += 0.01;
-			// torus.rotation.z += 0.02;
+			ground.rotation.y += 0.0003;
 			// torus.position = new BABYLON.Vector3(Math.cos(alpha) * 30, 20, Math.sin(alpha) * 30);
 			// amigaMaterial.setVector3('light0position', lightSphere.position);
 			shaderMaterial.setFloat('amt1', amt1 / 100.0);
