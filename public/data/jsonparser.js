@@ -125,22 +125,28 @@ function getFile(file,cb) {
 
 var parseQueue = [
 	{
+		title:'Näringsliv',
 		file:'foursquare_new2.js',
 		image:'dutt.png',
 		parser:'foursquare'
 	},
 	{
+		title:'Trafikolyckor',
 		file:'olyckor.js',
 		parser:'trafik'
 	},
 	{
+		title:'Evenemang',
 		file:'facebookevents.js',
 		parser:'facebook'
 	},
-	{	file:'bilbiotek.js',
+	{	
+		title:'Offentlig service',
+		file:'bilbiotek.js',
 		parser:'libraries'
 	},
 	{
+		title:'Näringsliv',
 		file:'dagligvarubutiker.js',
 		parser:'geojson'
 	},
@@ -177,8 +183,8 @@ function parse(data,parser,ictx,image) {
 				if (pixel.x>=0 && pixel.x<=imgsize.x && pixel.y>=0 && pixel.y<=imgsize.y)
 					ictx.drawImage(image,pixel.x,pixel.y,64,64);
 				}
-			else
-				console.log('out of bounds');
+			//else
+			//	console.log('out of bounds');
 		}
 	});
 	ictx.globalCompositeOperation = "source-over";
@@ -249,25 +255,30 @@ function createContext(width, height) {
 }
 
 function calcDivSums(arr,id) {
-	//var ret = [];
-	console.log(arr);
+	
+	
 	var totlen = arr[0].length;
-	var step = 255/arr.length;
-	var crap = 0;
-	for(var i=0;i<totlen;i++) {
-		//ret.push(0);
-		var j = 0;
-		var s = 0;
-		pos.forEach(function(v) {
-			//console.log(typeof(i));
-			arr.forEach(function(l) {
-				var pp = i + (v * 4);
-				if (pp>=0 && pp<totlen) {
-					console.log('calc');
-					var v = l[pp];
-					s+=v/128.0;
+	
+	
+	for(var i=0;i<totlen;i+=4) {
+	
+		var j=0, s = 0;
+		pos.forEach(function(offsetNumber) {
+			
+			arr.forEach(function(currentLayer) {
+				
+					var pp = i + (offsetNumber * 4);
+				
+				
+				if (pp > 0 && pp < totlen) {
+					
+					var v = currentLayer[pp];
+				
+					s+=v;//>100?1:((255/v)*0.3);
 					j++;
 				}
+				
+				//}
 				/*else {
 					console.log('ass',pp,totlen);
 					if (crap++>10000)
@@ -277,9 +288,9 @@ function calcDivSums(arr,id) {
 			
 		});
 		
-			var tv = Math.round((s/j)*255);//Math.max(0,Math.round((s))); //-(255/arr.length)
-			id.data[i] = tv;
-			id.data[i+3] = tv;
+		var tv = Math.round((s/(j)));//Math.max(0,Math.round((s))); //-(255/arr.length)
+		id.data[i] = 255;
+		id.data[i+3] = tv;
 	}
 	
 /*
@@ -316,6 +327,8 @@ function getImage(c,addbg) {
 	return result;
 }
 
+
+
 function processQue(q) {
 	var prt = document.getElementById('up');
 	q.forEach(function(v,i) {
@@ -324,35 +337,36 @@ function processQue(q) {
 			var img = new Image();
 			img.onload = function() {
 				//console.log('start parse',data,v.parser,ctx,img);
-				var cvs = v.cvs = createContext(imgsize.x,imgsize.y);
-				var ctx = v.ctx = cvs.getContext('2d');
+				var cvs =  createContext(imgsize.x,imgsize.y);
+				var ctx =  cvs.getContext('2d');
 				var res = parse(data,v.parser,ctx,img);
 				
 				v.extend(res);
+
 				//console.log('res',v);
 				var outimg = new Image();
 				outimg.src = cvs.toDataURL();
 				
-				v.divCvx = createContext(divx,divy);
-				v.divCtx = v.divCvx.getContext("2d");
+				var divCvx = createContext(divx,divy);
+				var divCtx = divCvx.getContext("2d");
 
 				//ictx.globalCompositeOperation = "destination-over";
 
-				v.divCtx.drawImage(outimg,0,0,divx,divy);
-				v.calcData = v.divCtx.getImageData(0,0,divx,divy);
-				//getDiversity(v.calcData);
-				//v.divCtx.putImageData(v.calcData,0,0);
+				divCtx.drawImage(outimg,0,0,divx,divy);
+				var calcData = divCtx.getImageData(0,0,divx,divy);
+				getDiversity(calcData);
+				divCtx.putImageData(calcData,0,0);
 				var crap = new Image();
-				crap.src = v.divCvx.toDataURL();
+				crap.src = divCvx.toDataURL();
 				ctx.drawImage(crap,0,0,imgsize.x,imgsize.y);
 				
-				outimg.src = cvs.toDataURL();
-
+				//outimg.src = cvs.toDataURL();
+				v.imgData = cvs.toDataURL();
 
 					
 
 
-					//prt.appendChild(outimg);
+				//prt.appendChild(outimg);
 				var span = document.createElement('label');
 				span.innerHTML = v.file;
 				var cb = document.createElement('input');
@@ -377,14 +391,14 @@ function processQue(q) {
 					
 					tx.putImageData(idd,0,0);
 
-					var result = getImage(cv,true);
-
 					
 
 
-					prt.appendChild(result);
+					prt.appendChild(getImage(cv,true));
 
 				},false);
+
+				window.pq = parseQueue;
 				prt.appendChild(span);
 				prt.appendChild(cb);
 				//prt.appendChild(outimg);
