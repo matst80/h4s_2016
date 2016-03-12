@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		// create a FreeCamera, and set its position to (x:0, y:5, z:-10)
 		//var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5,-10), scene);
-		var camera = new BABYLON.ArcRotateCamera('camera1', 3.1415/4, 3.1415/4, 14, new BABYLON.Vector3(0, 0, 0), scene);
+		var camera = new BABYLON.ArcRotateCamera('camera1', 3.1415/4, 3.1415/4, 14, new BABYLON.Vector3(10, 0, 0), scene);
 
 		// target the camera to scene origin
 		camera.setTarget(BABYLON.Vector3.Zero());
@@ -23,9 +23,17 @@ window.addEventListener('DOMContentLoaded', function() {
 		camera.attachControl(canvas, false);
 
 		camera.minZ = 1.0;
+		camera.lowerBetaLimit = 0.001;
+		camera.upperBetaLimit = 1.2;
 
-		// create a basic light, aiming 0,1,0 - meaning, to the sky
-		var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0,1,0), scene);
+		var light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(-1, -1, -1), scene);
+		light.position = new BABYLON.Vector3(6, 4, 1);
+		light.intensity = 1.0;
+
+		var lightSphere = BABYLON.Mesh.CreateSphere("sphere", 10, 2, scene);
+		lightSphere.position = light.position;
+		lightSphere.material = new BABYLON.StandardMaterial("light", scene);
+		lightSphere.material.emissiveColor = new BABYLON.Color3(1, 1, 0);
 
 		// create a built-in "ground" shape; its constructor takes the same 5 params as the sphere's one
 		//var ground = BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, scene);
@@ -36,8 +44,15 @@ window.addEventListener('DOMContentLoaded', function() {
 			vertexElement: "vertexShaderCode",
 			fragmentElement: "fragmentShaderCode",
 		}, {
-			attributes: ["position", "normal", "uv"],
-			uniforms: ["world", "worldView", "worldViewProjection", "view", "projection", "amt1", "amt2", "img1", "img2"],
+			attributes: [ "position", "normal", "uv" ],
+			uniforms: [
+				"world",
+				"worldView",
+				"worldViewProjection",
+				"view", "projection",
+				"amt1", "amt2", "img1",
+				"img2", "lightMatrix0"
+			],
 			// needAlphaBlending: true,
 		});
 
@@ -51,7 +66,7 @@ window.addEventListener('DOMContentLoaded', function() {
 		shaderMaterial.setTexture("textureSampler", mainTexture);
 		//shaderMaterial.setTexture("refSampler", refTexture);
 		shaderMaterial.setFloat("time", 0);
-		shaderMaterial.setVector3("cameraPosition", BABYLON.Vector3.Zero());
+		// shaderMaterial.setVector3("cameraPosition", BABYLON.Vector3.Zero());
 		shaderMaterial.backFaceCulling = false;
 		
 		//scene.shadowsEnabled = true;
@@ -76,12 +91,18 @@ window.addEventListener('DOMContentLoaded', function() {
 		scene.registerBeforeRender(function () {
 			// torus.rotation.x += 0.01;
 			ground.rotation.y += 0.0003;
+
 			// torus.position = new BABYLON.Vector3(Math.cos(alpha) * 30, 20, Math.sin(alpha) * 30);
-			// amigaMaterial.setVector3('light0position', lightSphere.position);
+			shaderMaterial.setVector3('light0', lightSphere.position);
 			shaderMaterial.setFloat('amt1', amt1 / 100.0);
 			shaderMaterial.setFloat('amt2', amt2 / 100.0);
 			shaderMaterial.setFloat('debugamt', debugging ? 1.0 : 0.0);
-			//	alpha += 0.01;
+			shaderMaterial.setFloat('time', T);
+
+			// var world = ;
+			// shaderMaterial.setMatrix('worldViewProjection', world.multiply(scene.getTransformMatrix()));
+			// shaderMaterial.setMatrix('worldView', world.multiply(scene.getTransformMatrix()));
+			// alpha += 0.01;
 
 			updateFadeState();
 
