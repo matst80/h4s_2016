@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Parser</title>
+	<script src="../tools/gausskruger.js"></script>
+	<style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+    <p>Sweref99 TM to WGS84</p>
+    <script>
+      swedish_params("sweref_99_tm");
+      document.write("Input: N"+6583073+" E"+671488);
+      document.write("<br><br>");
+      document.write("Output: "+grid_to_geodetic(6583073,671488)+"\n");
+    </script>
+</body>
+</html>
