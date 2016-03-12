@@ -209,15 +209,11 @@ window.addEventListener('DOMContentLoaded', function() {
 			queuedHeightmap = new BABYLON.Texture(source, scene);
 		}
 		window.updateHeightmap = function(img) {
-			//updateHeightmap()
-
 			queuedHeightmap = new BABYLON.DynamicTexture("dynamic texture", {
- width: 1024,
- height: 1024
-}, scene, true);
-			//console.log('dyntext',new BABYLON.Texture('res/dummydata1.png', scene));
+			 width: 1024,
+			 height: 1024
+			}, scene, true);
 			var textureContext = queuedHeightmap.getContext();
-			//console.log(textureContext);
 			textureContext.drawImage(img.img,0,0,1024,1024);
 			queuedHeightmap.update();
 		};
@@ -239,10 +235,6 @@ window.addEventListener('DOMContentLoaded', function() {
 		amt2_el.addEventListener('mousemove', function(e) {
 			amt2 = amt2_el.value;
 		});
-
-		document.getElementById('img1').addEventListener('click', updateHeightmap.bind(this, 'res/dummydata1.png'));
-		document.getElementById('img2').addEventListener('click', updateHeightmap.bind(this, 'res/dummydata2.png'));
-		document.getElementById('img3').addEventListener('click', updateHeightmap.bind(this, 'res/dummydata3.png'));
 
 		var debugging = false;
 		var debugging_el = document.getElementById('däbüg');
@@ -277,7 +269,7 @@ window.addEventListener('DOMContentLoaded', function() {
 	});
 
 	/* jquery.js */
-	/* jquery.velocity.js */
+	/* jquery.velocity.js
 	var buttons = [false, false, false, false, false, false];
 
 	// Animate two separate transform properties: rotateZ and translateX.
@@ -327,4 +319,5 @@ window.addEventListener('DOMContentLoaded', function() {
 	    	}, 100);
 		}
 	});
+	 */
 });

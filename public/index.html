@@ -4,8 +4,6 @@
 		<title>Geohackers</title>
 		<script src="babylon.2.3.js"></script>
 		<script src="data/compileddata.js"></script>
-		<script   src="https://code.jquery.com/jquery-2.2.1.min.js"   integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="   crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 		<style>
 		html, body {
@@ -135,14 +133,10 @@
 				v.y += outheight * 4.0;
 
 
-
-
-
-				
 				vec4 worldPos = world * vec4(v, 1.0);
 
 				gl_Position = worldViewProjection * worldPos;
-				
+
 				vPositionFromLight0 = lightMatrix0 * worldPos;
 
 				vPosition = position;
@@ -185,27 +179,27 @@
 
 			void main(void) {
 				vec3 vLightPosition = vec3(0,20,10);
-				
+
 				// World values
 				vec3 vPositionW = vec3(world * vec4(vPosition, 1.0));
 				vec3 vNormalW = normalize(vec3(world * vec4(vNormal, 0.0)));
 				vec3 viewDirectionW = normalize(cameraPosition - vPositionW);
-				
+
 				// Light
 				vec3 lightVectorW = normalize(vLightPosition - vPositionW);
-				
+
 				// diffuse
 				float ndl = max(0., dot(vNormalW, lightVectorW));
 				//float ndl = 1.0;
-				
+
 				//Shadow - brightness
 				float bri;
 
 				vec3 directionToLight = vPositionW.xyz - vLightPosition;
-		
+
 				float depth = length(directionToLight)*1000.;
 				depth = clamp(depth, 0., 1.0);
-				
+
 				//vec3 depth = vPositionFromLight0.xyz / vPositionFromLight0.w;
 				//vec3 depth = lightVectorW.xyz / lightVectorW.w;
 				vec3 depth2 = vec3(depth);
@@ -229,7 +223,7 @@
 
 				vec3 color = texture2D(textureSampler, vUV).rgb; ///2. + texture2D(textureSampler, vUV).rgb/2.;
 				//vec3 color = texture2D(shadowSampler, uv).rgb; ///2. + texture2D(textureSampler, vUV).rgb/2.;
-				
+
 				// Specular
 				vec3 angleW = normalize(viewDirectionW + lightVectorW);
 				float specComp = max(0., dot(vNormalW, angleW));
@@ -253,11 +247,6 @@
 		  \_____|\___|\___/|_| |_|\__,_|\___|_|\_\___|_|  |___/
 		</pre>
 		-->
-		<p>
-			<button id="img1"> Switch to Image 1 </button>
-			<button id="img2"> Switch to Image 2 </button>
-			<button id="img3"> Switch to Image 3 </button>
-		</p>
 		<ul id="buttoncnt"></ul>
 		<p>
 			<input id="amt1" type="range" /> Layer 1 Amt
@@ -266,14 +255,16 @@
 		</p>
 
 		<canvas id="renderCanvas"></canvas>
-		<script src="dal.js"></script>
-		<canvas id="renderCanvas"></canvas>
-		<div style="position: absolute; bottom: 0px; width: 100%">
+
+
+		<i id="cogs" class="fa fa-spin fa-cog"></i>
+
+		<!--<div style="position: absolute; bottom: 0px; width: 100%">
 			<img src="res/moske.png" style="position: relative; margin: 0 auto; height: 300px; display: block">
 		</div>
 		<div style="position: absolute; bottom: 88px; width: 100%;">
 			<div style="position: relative; margin: 0 auto; display: block; width: 7.1em">
-				<i id="cog" class="fa fa-spin fa-cog" style="position:relative; font-size: 8em;"></i>
+				
 			</div>
 		</div>
 		<div class="buttons left">
@@ -307,7 +298,8 @@
 				<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVgJIYAvD7Z00wWqlzobzN3oz_CrmEU8dKIAd4xYH4EzaLqdrjgg">
 				<p>Dataset 6</p>
 			</div>
-		</div>
+		</div>-->
 		<script src="app.js"></script>
+		<script src="dal.js"></script>
 	</body>
 </html>

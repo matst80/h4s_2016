@@ -197,8 +197,10 @@ dal.getLayers(function(d) {
 				});
 				var vals = [];
 				empty.forEach(function(v) {
-					var type = v.nextSibling.value;
-					vals.push({idx:d[v.value].idx,type:type});
+					if (v.value>0) {
+						var type = v.nextSibling.value;
+						vals.push({idx:d[v.value].idx,type:type});
+					}
 				});
 				cogs.classList.add('fa-spin');
 				dal.getDiversity(vals,function(d) {
