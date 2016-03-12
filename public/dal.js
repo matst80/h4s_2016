@@ -132,17 +132,32 @@ var dal = {
 			layerData.forEach(function(currentLayer) {
 				currentLayer.hdl.init(layerData.length);
 			});
-			pos.forEach(function(offsetNumber) {
+
+			if (layerData.length == 1) {
+
 				layerData.forEach(function(currentLayer) {
-					var pixelPos = i + (offsetNumber * 4);
+					var pixelPos = i;
 					if (pixelPos > 0 && pixelPos < totlen) {
 						currentLayer.hdl.pixelDeligate(currentLayer.layerdata.data.data[pixelPos]);
 					}
 				});
-			});
+
+			} else {
+
+				pos.forEach(function(offsetNumber) {
+					layerData.forEach(function(currentLayer) {
+						var pixelPos = i + (offsetNumber * 4);
+						if (pixelPos > 0 && pixelPos < totlen) {
+							currentLayer.hdl.pixelDeligate(currentLayer.layerdata.data.data[pixelPos]);
+						}
+					});
+				});
+
+			}
+
 			var tot = 0;
 			layerData.forEach(function(currentLayer) {
-				tot+=currentLayer.hdl.getResult();
+				tot += currentLayer.hdl.getResult();
 			});
 
 			if (dal.useBackgroundData) {
@@ -152,8 +167,14 @@ var dal = {
 				}
 			}
 			//var tv = Math.round((s/(j)));//Math.max(0,Math.round((s))); //-(255/arr.length)
+
+// tot = 0.0;
+			tot -= Math.random() * 2.0;
+
+			tot = Math.floor(tot);
+
 			resultData.data[i] = tot;
-			resultData.data[i+3] = tot;
+			resultData.data[i+3] = 255;
 		}
 		cb();
 	},
