@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		// create a FreeCamera, and set its position to (x:0, y:5, z:-10)
 		//var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5,-10), scene);
-		var camera = new BABYLON.ArcRotateCamera('camera1', 3.1415/4, 3.1415/4, 8, new BABYLON.Vector3(0, 0, 0), scene);
+		var camera = new BABYLON.ArcRotateCamera('camera1', 3.1415/4, 3.1415/4, 14, new BABYLON.Vector3(0, 0, 0), scene);
 
 		// target the camera to scene origin
 		camera.setTarget(BABYLON.Vector3.Zero());
@@ -35,12 +35,11 @@ window.addEventListener('DOMContentLoaded', function() {
 		var shaderMaterial = new BABYLON.ShaderMaterial("shader", scene, {
 			vertexElement: "vertexShaderCode",
 			fragmentElement: "fragmentShaderCode",
-		},
-			{
-				attributes: ["position", "normal", "uv"],
-				uniforms: ["world", "worldView", "worldViewProjection", "view", "projection", "amt1", "amt2", "img1", "img2"],
-				// needAlphaBlending: true,
-			});
+		}, {
+			attributes: ["position", "normal", "uv"],
+			uniforms: ["world", "worldView", "worldViewProjection", "view", "projection", "amt1", "amt2", "img1", "img2"],
+			// needAlphaBlending: true,
+		});
 
 
 		//var refTexture = new BABYLON.Texture("res/karta.jpg", scene);
@@ -83,8 +82,116 @@ window.addEventListener('DOMContentLoaded', function() {
 			shaderMaterial.setFloat('amt2', amt2 / 100.0);
 			shaderMaterial.setFloat('debugamt', debugging ? 1.0 : 0.0);
 			//	alpha += 0.01;
+
+			updateFadeState();
+
 			T += 1.0 / 60.0;
 		});
+
+
+
+
+
+
+
+
+
+
+
+
+		var fadestate = 'a-visible';
+		var fadetimer = 0.0;
+
+		function updateFadeState() {
+			// console.log('updateFadeState', fadestate, fadetimer);
+
+			function easeInOutQuad(t, b, c, d) {
+				if ((t/=d/2) < 1) return c/2*t*t + b;
+				return -c/2 * ((--t)*(t-2) - 1) + b;
+			}
+
+			if (fadestate == 'a-visible') {
+
+				amt1 = 0;
+				amt2 = 100;
+
+				amt1_el.value = amt1;
+				amt2_el.value = amt2;
+
+				if (queuedHeightmap != null) {
+					// we have something queued.
+					console.log('Fadestate: Got queued image...');
+
+					currentHeightmap = queuedHeightmap;
+					shaderMaterial.setTexture('img1', currentHeightmap);
+
+					queuedHeightmap = null;
+
+					fadestate = 'b-fading-in';
+					fadetimer = 0.0;
+				}
+
+			} else if (fadestate == 'b-fading-in') {
+
+				amt1 = Math.max(0.0, Math.min(100.0, easeInOutQuad(fadetimer, 0, 100.0, 1.0)));
+				amt2 = 100.0 - amt1;
+
+				amt1_el.value = amt1;
+				amt2_el.value = amt2;
+
+				fadetimer += 0.01;
+
+				if (fadetimer >= 1.0) {
+
+					console.log('Fadestate: Faded in, swap images...');
+
+					fadestate = 'b-visible';
+					fadetimer = 0.0;
+
+					amt1 = 100;
+					amt2 = 0;
+
+					amt1_el.value = amt1;
+					amt2_el.value = amt2;
+
+					shaderMaterial.setTexture('img2', currentHeightmap);
+					lastHeightmap = currentHeightmap;
+
+				}
+
+			} else if (fadestate == 'b-visible') {
+
+				fadetimer += 0.01;
+				if (fadetimer >= 1.0) {
+
+					console.log('Fadestate: Idle delay, restart.');
+
+					fadestate = 'a-visible';
+					fadetimer = 0.0;
+
+					amt1 = 0;
+					amt2 = 100;
+
+					amt1_el.value = amt1;
+					amt2_el.value = amt2;
+
+
+				}
+			}
+
+
+
+
+
+
+
+
+
+		}
+
+
+
+
 
 
 
@@ -97,17 +204,9 @@ window.addEventListener('DOMContentLoaded', function() {
 		var currentHeightmap = null;
 		var lastHeightmap = null;
 
-	//	var fadestate = 'a-visible';
-
 		updateHeightmap = function(source) {
 			console.log('updateHeightmap', source);
-
-			lastHeightmap = currentHeightmap;
-			shaderMaterial.setTexture('img2', lastHeightmap);
-
 			queuedHeightmap = new BABYLON.Texture(source, scene);
-			currentHeightmap = queuedHeightmap;
-			shaderMaterial.setTexture('img1', currentHeightmap);
 		}
 
 		shaderMaterial.setTexture('img1', null);
