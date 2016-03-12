@@ -1,4 +1,4 @@
-var fbdata = {
+{
   "data": [
     {
       "name": "Backyard Babies på Gröna Lund",
