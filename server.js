@@ -28,5 +28,5 @@ app.use(function(req, res){
 //create node.js http server and listen on port
 // Serve up content from public directory
 
-
-app.listen(80);
+// app.listen(80);
+app.listen(8080);
