@@ -1,11 +1,16 @@
 // javascript!
 window.addEventListener('DOMContentLoaded', function() {
+
+	var updateHeightmap;
+
 	var canvas = document.getElementById('renderCanvas');
 	var engine = new BABYLON.Engine(canvas, true);
 
 	var createScene = function() {
 		// create a basic BJS Scene object
 		var scene = new BABYLON.Scene(engine);
+
+		scene.clearColor = new BABYLON.Color3(1.0, 1.0, 1.0);
 
 		// create a FreeCamera, and set its position to (x:0, y:5, z:-10)
 		//var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5,-10), scene);
@@ -24,7 +29,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		// create a built-in "ground" shape; its constructor takes the same 5 params as the sphere's one
 		//var ground = BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, scene);
-		var ground = BABYLON.Mesh.CreateGroundFromHeightMap("mesh", "res/heightMap.png", 6, 6, 100, 0, 3, scene, false)
+		var ground = BABYLON.Mesh.CreateGroundFromHeightMap("mesh", "res/emptyheightmap.png", 10, 10, 500, 0, 10, scene, false)
 
 		// Compile
 		var shaderMaterial = new BABYLON.ShaderMaterial("shader", scene, {
@@ -33,9 +38,9 @@ window.addEventListener('DOMContentLoaded', function() {
 		},
 			{
 				attributes: ["position", "normal", "uv"],
-				uniforms: ["world", "worldView", "worldViewProjection", "view", "projection"]
+				uniforms: ["world", "worldView", "worldViewProjection", "view", "projection", "amt1", "amt2", "img1", "img2"],
+				// needAlphaBlending: true,
 			});
-
 
 
 		//var refTexture = new BABYLON.Texture("res/karta.jpg", scene);
@@ -63,10 +68,85 @@ window.addEventListener('DOMContentLoaded', function() {
 		//scene.receiveShadows = true;
 
 		// var material = new BABYLON.StandardMaterial("texture1", scene);
-
 		// material.diffuseTexture = new BABYLON.Texture("res/karta.jpg", scene);
 
 		ground.material = shaderMaterial;
+
+		// Animations
+		var T = 0;
+		scene.registerBeforeRender(function () {
+			// torus.rotation.x += 0.01;
+			// torus.rotation.z += 0.02;
+			// torus.position = new BABYLON.Vector3(Math.cos(alpha) * 30, 20, Math.sin(alpha) * 30);
+			// amigaMaterial.setVector3('light0position', lightSphere.position);
+			shaderMaterial.setFloat('amt1', amt1 / 100.0);
+			shaderMaterial.setFloat('amt2', amt2 / 100.0);
+			shaderMaterial.setFloat('debugamt', debugging ? 1.0 : 0.0);
+			//	alpha += 0.01;
+			T += 1.0 / 60.0;
+		});
+
+
+
+
+
+
+
+
+		var queuedHeightmap = null;
+		var currentHeightmap = null;
+		var lastHeightmap = null;
+
+	//	var fadestate = 'a-visible';
+
+		updateHeightmap = function(source) {
+			console.log('updateHeightmap', source);
+
+			lastHeightmap = currentHeightmap;
+			shaderMaterial.setTexture('img2', lastHeightmap);
+
+			queuedHeightmap = new BABYLON.Texture(source, scene);
+			currentHeightmap = queuedHeightmap;
+			shaderMaterial.setTexture('img1', currentHeightmap);
+		}
+
+		shaderMaterial.setTexture('img1', null);
+		shaderMaterial.setTexture('img2', null);
+
+		var amt1 = 50;
+		var amt2 = 50;
+
+		var amt1_el = document.getElementById('amt1');
+		amt1_el.value = 50;
+		amt1_el.addEventListener('mousemove', function(e) {
+			amt1 = amt1_el.value;
+		});
+
+		var amt2_el = document.getElementById('amt2');
+		amt2_el.value = 50;
+		amt2_el.addEventListener('mousemove', function(e) {
+			amt2 = amt2_el.value;
+		});
+
+		document.getElementById('img1').addEventListener('click', updateHeightmap.bind(this, 'res/dummydata1.png'));
+		document.getElementById('img2').addEventListener('click', updateHeightmap.bind(this, 'res/dummydata2.png'));
+		document.getElementById('img3').addEventListener('click', updateHeightmap.bind(this, 'res/dummydata3.png'));
+
+		var debugging = false;
+		var debugging_el = document.getElementById('däbüg');
+		debugging_el.addEventListener('click', function(e) {
+			debugging  = debugging_el.checked;
+		});
+
+
+
+
+
+
+
+
+
+
 
 
 
