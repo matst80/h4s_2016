@@ -191,6 +191,7 @@ dal.getLayers(function(d) {
 			if (bouncyBoobs)
 				clearTimeout(bouncyBoobs);
 			bouncyBoobs = setTimeout(function() {
+				cogs.classList.add('fa-spin');
 				console.log('NU GEGERERAR VIU');
 				var empty = [].filter.call( document.querySelectorAll('input[type=checkbox]'), function( el ) {
 				   return el.checked;
@@ -202,10 +203,9 @@ dal.getLayers(function(d) {
 						vals.push({idx:d[v.value].idx,type:type});
 					}
 				});
-				cogs.classList.add('fa-spin');
 				dal.getDiversity(vals,function(d) {
-					cogs.classList.remove('fa-spin');
 					updateHeightmap(d);
+					cogs.classList.remove('fa-spin');
 				});
 			},700);
 		}
