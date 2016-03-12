@@ -1,12 +1,12 @@
 
 
 var latbound = {
-	min:59.299718,
-	max:59.343746,
+	min:59.305966,
+	max:59.351446,
 }
 var lonbound = {
-	min:18.027777,
-	max:18.140091
+	min:18.011570,
+	max:18.104552
 }
 
 var imgsize = {
