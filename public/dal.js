@@ -11,7 +11,7 @@ var imgsize = {
 	y:1024
 };
 
-var divfactor = 5;
+var divfactor = 1;
 var divy = Math.round(imgsize.y/divfactor);
 var divx = Math.round(imgsize.x/divfactor);
 
@@ -131,15 +131,20 @@ var dal = {
 			//var j=0, s = 0;
 			layerData.forEach(function(currentLayer) {
 				currentLayer.hdl.init(layerData.length);
-			});
-			pos.forEach(function(offsetNumber) {
-				layerData.forEach(function(currentLayer) {
-					var pixelPos = i + (offsetNumber * 4);
-					if (pixelPos > 0 && pixelPos < totlen) {
-						currentLayer.hdl.pixelDeligate(currentLayer.layerdata.data.data[pixelPos]);
+
+				layerData.forEach(function(calcLayer) {
+					if (currentLayer.idx!=calcLayer.idx) {
+						//pos.forEach(function(offsetNumber) {
+							var pixelPos = i;// + (offsetNumber * 4);
+							//if (pixelPos > 0 && pixelPos < totlen) {
+								currentLayer.hdl.pixelDeligate(calcLayer.layerdata.data.data[pixelPos]);
+							//}
+						//});
 					}
 				});
+
 			});
+
 			var tot = 0;
 			layerData.forEach(function(currentLayer) {
 				tot+=currentLayer.hdl.getResult();

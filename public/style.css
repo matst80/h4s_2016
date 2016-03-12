@@ -16,13 +16,18 @@ html, body {
 	touch-action: none;
 }
 
-#buttoncnt {
+#buttoncnt,#coder {
 	z-index:9;
 	position: absolute;
 	left:0;
 	bottom:0;
 	width:20%;
 	list-style: none;
+}
+
+#coder {
+	bottom:auto;
+	top:0;
 }
 
 #buttoncnt li {
