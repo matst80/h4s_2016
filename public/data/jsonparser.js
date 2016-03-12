@@ -78,6 +78,21 @@ var parsers = {
 	}
 };
 
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+ctx.globalCompositeOperation = "lighter";
+
+
+function convItem(e) {
+	var dlat = ((e.lat-latbound.min)/factor.lat);
+	var dlon = ((e.lon-lonbound.min)/factor.lon);
+	console.log(e,latbound);
+	return {
+		y:Math.round(dlat*imgsize.y+Math.random()*10),
+		x:Math.round(dlon*imgsize.x+Math.random()*10),
+	};
+}
+
 function getFile(file,cb) {
 	var xmlhttp = new XMLHttpRequest();
 
@@ -95,6 +110,7 @@ function getFile(file,cb) {
 var parseQueue = [
 	{
 		file:'foursquare_new2.js',
+		image:'dutt.png',
 		parser:'foursquare'
 	},
 	{
@@ -117,81 +133,79 @@ var parseQueue = [
 
 
 
-function parse(data,parser) {
-	console.log(data,parser,parsers);
+function parse(data,parser,ictx,image) {
+	//console.log(data,parser,parsers);
 	var p = parsers[parser];
 	var baseArray = p.getarray(data);
-	var ret = [];
+	var ret = { points: []};
+
+	ictx.fillStyle = "#000";
+	ictx.fillRect(0,0,imgsize.x,imgsize.y);
+	
+
 	baseArray.forEach(function(v,i) {
 		var nd = p.rowdelegate(v,i);
 		if (nd && nd.lat) {
-			if (nd.lat>=latbound.min && nd.lat<=latbound.max && nd.lon>=lonbound.min && nd.lon<=lonbound.max) 
-				ret.push(nd);
+			if (nd.lat>=latbound.min && nd.lat<=latbound.max && nd.lon>=lonbound.min && nd.lon<=lonbound.max) {
+				ret.points.push(nd);
+				var pixel = convItem(nd);
+				
+				if (pixel.x>=0 && pixel.x<=imgsize.x && pixel.y>=0 && pixel.y<=imgsize.y)
+					ictx.drawImage(image,pixel.x,pixel.y,16,16);
+				}
 			else
 				console.log('out of bounds');
 		}
 	});
+	
 	return ret;
 }
+
+Object.prototype.extend = function(obj) {
+   for (var i in obj) {
+      if (obj.hasOwnProperty(i)) {
+         this[i] = obj[i];
+      }
+   }
+};
 
 function processQue(q) {
 	var prt = document.getElementById('up');
 	q.forEach(function(v,i) {
 		
 		getFile(v.file,function(data) {
-			var points = parse(data,v.parser);	
-			v.points = points;
-			console.log(v.file,points.length);
-			plotEvents(points);
-			var span = document.createElement('span');
-			span.innerHTML = v.file;
-			var image = new Image();
-			image.src = canvas.toDataURL();
-			prt.appendChild(span);
-			prt.appendChild(image);
-
+			var img = new Image();
+			img.onload = function() {
+				//console.log('start parse',data,v.parser,ctx,img);
+				var res = parse(data,v.parser,ctx,img);
+				
+				v.extend(res);
+				console.log('res',v);
+				var outimg = new Image();
+				outimg.src = canvas.toDataURL();
+				var span = document.createElement('span');
+				span.innerHTML = v.file;
+				prt.appendChild(span);
+				prt.appendChild(outimg);
+			}
+			img.src = v.image||'dutt.png';
 		});
 	});
 }
 
-var image = new Image();
-image.src = 'dutt.png';
 
-	var canvas = document.getElementById('canvas');
-	var ctx = canvas.getContext('2d');
+processQue(parseQueue);
+
+
+/*
+function plotEvents(arr) {
 	
-	processQue(parseQueue);
-
-	function convItem(e) {
-		var dlat = ((e.lat-latbound.min)/factor.lat);
-		var dlon = ((e.lon-lonbound.min)/factor.lon);
-		return {
-			y:Math.round(dlat*imgsize.y+Math.random()*10),
-			x:Math.round(dlon*imgsize.x+Math.random()*10),
-		};
-	}
-
-
-	function plotEvents(arr) {
-		
-		ctx.fillStyle = "#000";
-		ctx.fillRect(0,0,imgsize.x,imgsize.y);
-		ctx.globalCompositeOperation = "lighter";
-		arr.forEach(function(v,i) {
-			
-				
-					var pixel = convItem(v);
-					if (pixel.x>0 && pixel.x<imgsize.x && pixel.y>0 && pixel.y<imgsize.y)
-						ctx.drawImage(image,pixel.x,pixel.y,16,16);
-					
-			
-		});
-		
-	}
-	
-
-
-
-
-
-
+	ctx.fillStyle = "#000";
+	ctx.fillRect(0,0,imgsize.x,imgsize.y);
+	ctx.globalCompositeOperation = "lighter";
+	arr.forEach(function(v,i) {	
+		var pixel = convItem(v);
+		if (pixel.x>0 && pixel.x<imgsize.x && pixel.y>0 && pixel.y<imgsize.y)
+			ctx.drawImage(image,pixel.x,pixel.y,16,16);
+	});
+}*/
