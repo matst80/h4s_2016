@@ -148,6 +148,29 @@ html, body {
 	opacity: 1;
 }
 
+#logocnt {
+	background:rgba(255,255,255,0.9);
+	padding: 10px;
+	position:absolute;
+	bottom: 400px;
+	left: 0px;
+	text-align: center;
+	color: #444;
+	width: 120px;
+	height: 320px;
+	z-index: 100;
+	border-top-right-radius: 6px;
+	border-bottom-right-radius: 6px;
+	opacity: 0.6;
+}
+
+#logocnt img {
+	max-width: 110px;
+	max-height: 100px;
+	margin:15px 0;
+	z-index: 100;
+}
+
 /*body {
 	font-family: "Helvetica Neue", Helvetica;
 	width: 90%;
