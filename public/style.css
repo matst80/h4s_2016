@@ -7,6 +7,86 @@ html, body {
 	background-color: #000;
 }
 
+
+.burk2 {
+	display: flex;
+	margin: auto 0;
+	width: 50%;
+	height: 50%;
+	position: relative;
+}
+
+.burk2 .innerburk2 {
+	display: block;
+	position: absolute;;
+	right: -1500px;
+	bottom: -1250px;
+	width: 3000px;
+	height: 2500px;
+}
+
+.burk2 .innerburk2 img {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.burk2 .innerburk2 canvas#renderCanvas {
+	position: absolute;
+	top: 800px;
+	left: 990px;
+	right: auto;
+	width: 1024px;
+	height: 800px;
+}
+
+.burk2 .innerburk2 .burkmenu {
+	position: absolute;
+	top: 820px;
+	left: 990px;
+	width: 1024px;
+}
+
+.burk2 .innerburk2 .burkmenu #buttoncnt {
+	display: block;
+	position: relative;
+	left: auto;
+	top: auto;
+	bottom: auto;
+	width: auto;
+	text-align: center;
+	width: 1024px;
+	padding: 0;
+	margin: 0;
+}
+
+.burk2 .innerburk2 .burkmenu #buttoncnt li {
+	display: inline-block;
+	margin: 0px;
+	color: #fff;
+	padding: 10px 5px;
+	border: none;
+	border-radius: 2px;
+	background-color: none;
+	opacity: 0.66;
+	font-size: 13pt;
+	font-family: "Helvetica Neue", Helvetica;
+	cursor: pointer;
+}
+
+.burk2 .innerburk2 .burkmenu #buttoncnt li.selected {
+	transform: translateY(10px) scale(0.9);
+	background-color: #000;
+	opacity: 1.0;
+}
+
+.burk2 .innerburk2 .burkmenu #cogs {
+	// left: 800px;
+	// top: 990px;
+	display: none;
+}
+
+
 #renderCanvas {
 	width   : 75%;
 	height  : 100%;
