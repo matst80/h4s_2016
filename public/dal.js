@@ -7,12 +7,6 @@ dd.push(
 		points:[],
 		title:'Befolkningstäthet',
 	});
-dd.push(
-	{
-		imgData:'res/avatar.png',
-		points:[],
-		title:'Lefitäthet',
-	});
 
 
 var imgsize = {
