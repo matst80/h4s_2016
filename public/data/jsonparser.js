@@ -140,9 +140,9 @@ var parseQueue = [
 	{
 		title:'Evenemang',
 		file:'facebookevents.js',
-		image:'tunadutt.png',
+		//image:'tunadutt.png',
 		parser:'facebook',
-		multiple: 0.2,
+		multiple: 0.15,
 	},
 	{
 		title:'Offentlig service',
