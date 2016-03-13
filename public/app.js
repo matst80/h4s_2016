@@ -144,7 +144,7 @@ window.addEventListener('DOMContentLoaded', function() {
     particleSystem.maxLifeTime = 1.5;
 
     // Emission rate
-    particleSystem.emitRate = 0;
+    particleSystem.emitRate = 10;
 
     // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
     particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
@@ -168,7 +168,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Start the particle system
     particleSystem.start();
-    particleSystem.stop();
+   // particleSystem.stop();
 
      var randomNumber = function (min, max) {
         if (min === max) {
