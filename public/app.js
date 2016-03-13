@@ -144,7 +144,7 @@ window.addEventListener('DOMContentLoaded', function() {
     particleSystem.maxLifeTime = 1.5;
 
     // Emission rate
-    particleSystem.emitRate = 10;
+    particleSystem.emitRate = 0;
 
     // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
     particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
@@ -240,18 +240,16 @@ window.addEventListener('DOMContentLoaded', function() {
 
 						particleSystem.startDirectionFunction(emitPower, worldMatrix, particle.direction, particle);
 
-						particle.lifeTime = 99999.0; // randomNumber(particleSystem.minLifeTime, particleSystem.maxLifeTime);
-						particle.size = 3.2;// randomNumber(particleSystem.minSize, particleSystem.maxSize);
+						particle.lifeTime = 9999.0; // randomNumber(particleSystem.minLifeTime, particleSystem.maxLifeTime);
+						particle.size = 4.2;// randomNumber(particleSystem.minSize, particleSystem.maxSize);
 						particle.angularSpeed = 0.0;//  randomNumber(particleSystem.minAngularSpeed, particleSystem.maxAngularSpeed);
 						particleSystem.startPositionFunction(worldMatrix, particle.position, particle);
 
-						particle.color = colormap[ p.idx % colormap.length ]; // new BABYLON.Color4(1, 0.0, 1.0, 1.0);
+						particle.color = colormap[ p.idx % colormap.length ]; 
+						// particle.color = new BABYLON.Color4(1, 0.0, 1.0, 1.0);
 
 						particleSystem.colorDead.subtractToRef(particle.color, particleSystem._colorDiff);
 						particleSystem._colorDiff.scaleToRef(1.0 / particle.lifeTime, particle.colorStep);
-
-
-
 
 
 					});
