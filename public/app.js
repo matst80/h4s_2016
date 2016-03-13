@@ -168,6 +168,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Start the particle system
     particleSystem.start();
+    particleSystem.stop();
 
      var randomNumber = function (min, max) {
         if (min === max) {
@@ -212,6 +213,15 @@ window.addEventListener('DOMContentLoaded', function() {
 					fadetimer = 0.0;
 				}
 
+				var colormap = [
+					new BABYLON.Color4(1.0, 0.1, 0.2, 1.0),
+					new BABYLON.Color4(0.2, 1.0, 0.1, 1.0),
+					new BABYLON.Color4(0.1, 0.2, 1.0, 1.0),
+					new BABYLON.Color4(1.0, 0.9, 1.1, 1.0),
+					new BABYLON.Color4(0.1, 1.0, 0.9, 1.0),
+					new BABYLON.Color4(0.9, 0.1, 1.0, 1.0),
+				];
+
 				if (queuedPoints) {
 
 
@@ -238,7 +248,7 @@ window.addEventListener('DOMContentLoaded', function() {
 						particle.angularSpeed = 0.0;//  randomNumber(particleSystem.minAngularSpeed, particleSystem.maxAngularSpeed);
 						particleSystem.startPositionFunction(worldMatrix, particle.position, particle);
 
-						particle.color = new BABYLON.Color4(1,0,1,1);
+						particle.color = colormap[ p.idx % colormap.length ]; // new BABYLON.Color4(1, 0.0, 1.0, 1.0);
 
 						particleSystem.colorDead.subtractToRef(particle.color, particleSystem._colorDiff);
 						particleSystem._colorDiff.scaleToRef(1.0 / particle.lifeTime, particle.colorStep);
