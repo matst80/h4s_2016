@@ -49,7 +49,20 @@
 				float outheight = H(vec2(0,0));
 
 				vec3 v = position;
-				v.y += outheight * 2.0;
+				v.y += outheight * 1.0;
+
+
+				float dist = 1.0 * length(0.5 - uv);
+
+				dist = max(0.0, min(1.0, dist));
+
+/*
+				if (dist > 0.4)
+					dist = 1.0 - ((dist - 0.4) * 5.0);
+				else
+					dist = 1.0;
+*/
+				// v.y -= dist * dist;
 
 				gl_Position = worldViewProjection * vec4(v, 1.0);
 
