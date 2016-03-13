@@ -4,7 +4,6 @@ html, body {
 	height  : 100%;
 	margin  : 0;
 	padding : 0;
-	background-color: #000;
 }
 
 
@@ -103,6 +102,7 @@ html, body {
 	top:0;
 	bottom:0;
 	width:25%;
+	background-color: #222;
 	list-style: none;
 }
 
@@ -113,17 +113,17 @@ html, body {
 }
 
 #buttoncnt li {
-	margin:10px;
+	margin:2px;
 	color:#fff;
 	padding:15px 10px;
-	border:solid 1px #005;
+	border:solid 1px #444;
 	border-radius: 2px;
-	background-color: #000;
+	background-color: #222;
 	transition: all 0.3s ease;
 }
 
 #buttoncnt li.selected {
-	background-color: #ccf;
+	background-color: #226;
 	transform: scale(1.1);
 }
 
