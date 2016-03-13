@@ -37,8 +37,8 @@ window.addEventListener('DOMContentLoaded', function() {
 		//light.direction = BABYLON.Vector3.Zero().subtract(light.position).normalize();
 
 		// create a built-in "ground" shape; its constructor takes the same 5 params as the sphere's one
-		var ground = BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, scene);
-		//var ground = BABYLON.Mesh.CreateGroundFromHeightMap("mesh", "res/emptyheightmap.png", 10, 10, 500, 0, 10, scene, false)
+		// var ground = BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, scene);
+		var ground = BABYLON.Mesh.CreateGroundFromHeightMap("mesh", "res/emptyheightmap.png", 10, 10, 500, 0, 10, scene, false)
 
 		// Compile
 		var shaderMaterial = new BABYLON.ShaderMaterial("shader", scene, {

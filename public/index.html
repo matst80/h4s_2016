@@ -147,7 +147,7 @@
 				// Specular
 				vec3 angleW = normalize(viewDirectionW + lightVectorW);
 				float specComp = max(0., dot(vNormalW, angleW));
-				specComp = pow(specComp, max(1., 64.)) * 2.;
+				specComp = pow(specComp, 204.0) * 0.5;
 
 				/*if (debugamt > 0.5) {
 					color *= 0.5;
