@@ -16,7 +16,7 @@ html, body {
 	touch-action: none;
 }
 
-#buttoncnt,#coder {
+#buttoncnt, #coder {
 	z-index:9;
 	position: absolute;
 	left:0;
@@ -39,7 +39,7 @@ html, body {
 }
 
 #cogs {
-	color: #000000;
+	color: #fff;
 	position: absolute;
 	left:49%;
 	font-size: 10em;

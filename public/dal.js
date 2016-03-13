@@ -223,7 +223,7 @@ var bouncyBoobs;
 dal.getLayers(function(d) {
 	d.forEach(function(v) {
 		var li = doc.createElement('li');
-		var sel = doc.createElement('select');
+		//var sel = doc.createElement('select');
 		var inp = doc.createElement('input');
 		var span = doc.createElement('span');
 		span.innerHTML = v.title;
@@ -237,12 +237,13 @@ dal.getLayers(function(d) {
 				cogs.classList.add('fa-spin');
 				console.log('NU GEGERERAR VIU');
 				var empty = [].filter.call( document.querySelectorAll('input[type=checkbox]'), function( el ) {
+					el.parentNode.classList.toggle('selected',el.checked);
 				   return el.checked;
 				});
 				var vals = [];
 				empty.forEach(function(v) {
 					if (v.value>0) {
-						var type = v.nextSibling.value;
+						var type = '+';//v.nextSibling.value;
 						vals.push({idx:d[v.value].idx,type:type});
 					}
 				});
@@ -253,7 +254,7 @@ dal.getLayers(function(d) {
 			},700);
 		}
 		inp.addEventListener('change',updateSelectedLayers,false);
-		sel.addEventListener('change',updateSelectedLayers,false);
+		/*sel.addEventListener('change',updateSelectedLayers,false);
 		for(var i in calcFunc) {
 			var v = calcFunc[i];
 			var opt = doc.createElement('option');
@@ -261,10 +262,10 @@ dal.getLayers(function(d) {
 			opt.innerHTML = i;
 			sel.appendChild(opt);
 		}
-
+*/
 		li.appendChild(span);
 		li.appendChild(inp);
-		li.appendChild(sel);
+		//li.appendChild(sel);
 		bcnt.appendChild(li);
 	});
 });

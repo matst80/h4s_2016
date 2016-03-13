@@ -142,7 +142,7 @@ var parseQueue = [
 		file:'facebookevents.js',
 		image:'tunadutt.png',
 		parser:'facebook',
-		multiple: 0.5,
+		multiple: 0.2,
 	},
 	{
 		title:'Offentlig service',
@@ -168,32 +168,23 @@ var parseQueue = [
 
 
 function parse(data,parser,ictx,image,multiple) {
-	//console.log(data,parser,parsers);
+
 	var p = parsers[parser];
 	var baseArray = p.getarray(data);
 	var ret = { points: []};
-	//
-	
+
 	ictx.globalAlpha = 1.0;
 	ictx.fillStyle = "#000";
 	ictx.fillRect(0,0,imgsize.x,imgsize.y);
-	
-	
-	//ictx.drawImage(bgmap,0,0,imgsize.x,imgsize.y);
-	
+
 	ictx.globalCompositeOperation = "lighter";
 	baseArray.forEach(function(v,i) {
 		var nd = p.rowdelegate(v,i);
 		if (nd && nd.lat) {
 			if (nd.lat>=latbound.min && nd.lat<=latbound.max && nd.lon>=lonbound.min && nd.lon<=lonbound.max) {
-				
+
 				var pixel = convItem(nd);
 
-				/*pixel.x -= 5.0;
-				pixel.y -= 5.0;
-				pixel.x += 10.0 * Math.random();
-				pixel.y += 10.0 * Math.random();*/
-				
 				if (pixel.x>=0 && pixel.x<=imgsize.x && pixel.y>=0 && pixel.y<=imgsize.y) {
 					ret.points.push(pixel);
 					ictx.globalAlpha = multiple;
@@ -237,7 +228,7 @@ var pos = [
 
 function getDiversity(imageData) {
 	var b = imageData.data;
-	
+
 	var nd = new Array(b.length);
 	for(var y=1;y<divy-1;y++)
 		for(var x=1;x<divx-1;x++)
@@ -246,12 +237,12 @@ function getDiversity(imageData) {
 			var o = b[op*4];
 			var s = 0;
 			pos.forEach(function(v) {
-				s+=Math.abs(o-b[(op+v)*4]);	
+				s+=Math.abs(o-b[(op+v)*4]);
 			});
 			//console.log(s);
 			s= Math.round(s/2);
 			op*=4;
-			
+
 			nd[op] = s;
 			nd[op+1] = 0;
 			nd[op+2] = 0;
@@ -273,64 +264,32 @@ function createContext(width, height) {
 }
 
 function calcDivSums(arr,id) {
-	
-	
+
 	var totlen = arr[0].length;
-	
-	
 	for(var i=0;i<totlen;i+=4) {
-	
 		var j=0, s = 0;
 		pos.forEach(function(offsetNumber) {
-			
+
 			arr.forEach(function(currentLayer) {
-				
-					var pp = i + (offsetNumber * 4);
-				
-				
+
+				var pp = i + (offsetNumber * 4);
 				if (pp > 0 && pp < totlen) {
-					
 					var v = currentLayer[pp];
-				
 					s+=v;//>100?1:((255/v)*0.3);
 					j++;
 				}
-				
-				//}
-				/*else {
-					console.log('ass',pp,totlen);
-					if (crap++>10000)
-						return;
-				}*/
 			});
-			
 		});
-		
 		var tv = Math.round((s/(j)));//Math.max(0,Math.round((s))); //-(255/arr.length)
 		id.data[i] = 255;
 		id.data[i+3] = tv;
 	}
-	
-/*
-	arr.forEach(function(v) {
-		v.forEach(function(p,i) {
-			var s = 0;
-			pos.forEach(function(v) {
-				s+=b[(op+v)*4];	
-			});
-			ret[i]+=p;
-		});
-		
-	});
-	ret.forEach(function(v,i) {
-		id.data[i]=Math.round(ret[i]/(arr.length));
-	});
 
-	return ret;*/
+
 }
 
 function getImage(c,addbg) {
-	
+
 	var result = new Image();
 	result.src = c.toDataURL();
 
@@ -350,7 +309,7 @@ function getImage(c,addbg) {
 function processQue(q) {
 	var prt = document.getElementById('up');
 	q.forEach(function(v,i) {
-		
+
 		getFile(v.file,function(data) {
 			var img = new Image();
 			img.onload = function() {
@@ -358,13 +317,13 @@ function processQue(q) {
 				var cvs =  createContext(imgsize.x,imgsize.y);
 				var ctx =  cvs.getContext('2d');
 				var res = parse(data,v.parser,ctx,img,v.multiple);
-				
+
 				v.extend(res);
 
 				//console.log('res',v);
 				var outimg = new Image();
 				outimg.src = cvs.toDataURL();
-				
+
 				var divCvx = createContext(divx,divy);
 				var divCtx = divCvx.getContext("2d");
 
@@ -377,8 +336,8 @@ function processQue(q) {
 				var crap = new Image();
 				crap.src = divCvx.toDataURL();
 				ctx.drawImage(crap,0,0,imgsize.x,imgsize.y);
-				
-				//outimg.src = cvs.toDataURL();
+
+
 				v.imgData = cvs.toDataURL();
 
 
@@ -400,22 +359,8 @@ function processQue(q) {
 }
 var bgmap = new Image();
 bgmap.onload = function() {
-	processQue(parseQueue);	
+	processQue(parseQueue);
 }
 bgmap.src = "/res/karta.jpg";
 
 
-
-
-/*
-function plotEvents(arr) {
-	
-	ctx.fillStyle = "#000";
-	ctx.fillRect(0,0,imgsize.x,imgsize.y);
-	ctx.globalCompositeOperation = "lighter";
-	arr.forEach(function(v,i) {	
-		var pixel = convItem(v);
-		if (pixel.x>0 && pixel.x<imgsize.x && pixel.y>0 && pixel.y<imgsize.y)
-			ctx.drawImage(image,pixel.x,pixel.y,16,16);
-	});
-}*/
