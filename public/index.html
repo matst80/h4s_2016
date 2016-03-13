@@ -38,26 +38,50 @@ body {
 }
 
 #logocnt {
-	background:rgba(255,255,255,0.9);
+	background:rgba(255,255,255,0.4);
+	border: 1px solid rgba(255,255,255,0.4);
+	border-radius: 10px;
+	color: rgba(255,255,255,0.8) !important;
 	padding: 10px;
 	position:absolute;
-	bottom: 200px;
-	left: 0px;
+	top: 200px;
+	left: 200px;
 	text-align: center;
 	color: #444;
-	width: 120px;
-	height: 320px;
+	width: 30%;
+	height: 400px;
 	z-index: 100;
-	border-top-right-radius: 6px;
-	border-bottom-right-radius: 6px;
 	opacity: 0.6;
+	text-align: justify;
+	padding: 10px;
+	font-size: 1.5em;
 }
 
-#logocnt img {
+#logocnt #logodiv img {
 	max-width: 110px;
-	max-height: 100px;
+	max-height: 70px;
 	margin:15px 0;
 	z-index: 100;
+	padding-bottom: 30px;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+#logodiv {
+	position: absolute;
+	bottom: 0px;
+	left: 75px;
+}
+
+#logocnt span {
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+#logocnt a {
+	text-decoration: none;
+	color: rgba(255,255,255,1.0) !important;
+	font-weight: bold;
 }
 
 </style>
@@ -65,9 +89,15 @@ body {
 <body>
 <a href="https://github.com/matst80/h4s_2016"><img style="position: absolute; top: 0; left: 0; border: 0; z-index: 200;" src="https://camo.githubusercontent.com/c6286ade715e9bea433b4705870de482a654f78a/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_white_ffffff.png"></a>
 <div id="logocnt">
-	<a href="http://www.cavagent.com"><img src="res/cavagent.gif"></a><br>
-	<a href="http://www.spotify.com"><img src="res/spotify-logo.png"></a><br>
+	<div style="display:none">
+	The DiverCity app is a celebration to <a href="https://en.wikipedia.org/wiki/Jane_Jacobs">Jane Jacobs</a> theory of city diversity and its connection to city prosperity. Using several Open Data-sources from Swedish authorities this app visualizes city diversity and the interesting phenomenons that occur where diversity exists.
+	</div>
+	<img src="res/text2.png" style="width: 100% !important">
+	<div id="logodiv">
+	<a href="http://www.cavagent.com" style="position: relative; bottom: 28px"><img src="res/cavagent.gif"></a>
+	<a href="http://www.spotify.com"><img src="res/spotify-logo.png"></a>
 	<a href="http://www.sp.se"><img src="res/sp.png"></a>
+	</div>
 </div>
 <div class="burk">
 <a href="inside.html">
