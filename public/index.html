@@ -1,209 +1,77 @@
-<!DOCTYPE html>
 <html>
-	<head>
-		<title>Geohackers</title>
-		<script src="data/compileddata.js"></script>
-		<script src="babylon.2.3.js"></script>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="style.css">
-	</head>
-	<body>
-		<script type="application/vertexShader" id="vertexShaderCode">
-			precision highp float;
+<head>
+<style>
 
-			// Attributes
-			attribute vec3 position;
-			attribute vec3 normal;
-			attribute vec2 uv;
+html {
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
 
-			// Uniforms
-			uniform mat4 worldViewProjection;
-			uniform float time;
-			//uniform mat4 lightMatrix0;
-			uniform mat4 world;
+body {
+	background-color: #000;
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
 
+.burk {
+	display: flex;
+	margin: auto 0;
+	width: 50%;
+	height: 50%;
+	position: relative;
+}
 
-			// Varying
-			varying vec3 vPosition;
-			varying vec3 vNormal;
-			varying vec2 vUV;
-			//varying vec4 vPositionFromLight0;
-			varying float vHeight;
+.burk a {
+	display: block;
+	position: absolute;;
+	right: -960px;
+	bottom: -540px;
+	width: 1920px;
+	height: 1080px;
+}
 
-			uniform float amt1;
-			uniform float amt2;
-			uniform sampler2D img1;
-			uniform sampler2D img2;
+.burk img {
+	top: 0;
+	image-size: cover;
+}
 
-			float H(vec2 dd) {
+#logocnt {
+	background:rgba(255,255,255,0.9);
+	padding: 10px;
+	position:absolute;
+	bottom: 400px;
+	left: 0px;
+	text-align: center;
+	color: #444;
+	width: 120px;
+	height: 320px;
+	z-index: 100;
+	border-top-right-radius: 6px;
+	border-bottom-right-radius: 6px;
+	opacity: 0.6;
+}
 
-				float outheight =
-					texture2D(img1, uv + dd).r * amt1 +
-					texture2D(img2, uv + dd).r * amt2;
+#logocnt img {
+	max-width: 110px;
+	max-height: 100px;
+	margin:15px 0;
+	z-index: 100;
+}
 
-				return outheight;
-			}
-
-			void main(void) {
-
-				float outheight = H(vec2(0,0));
-
-				vec3 v = position;
-				v.y += outheight * 1.0;
-
-
-				float dist = 1.0 * length(0.5 - uv);
-
-				dist = max(0.0, min(1.0, dist));
-
-/*
-				if (dist > 0.4)
-					dist = 1.0 - ((dist - 0.4) * 5.0);
-				else
-					dist = 1.0;
-*/
-				// v.y -= dist * dist;
-
-				gl_Position = worldViewProjection * vec4(v, 1.0);
-
-				//vPositionFromLight0 = lightMatrix0 * worldPos;
-
-				float R = 0.01;
-				float dx = H(vec2(R,0)) - H(vec2(-R,0));
-				float dy = H(vec2(0,R)) - H(vec2(0,-R));
-
-				vPosition = v;
-				vNormal = normalize(vec3(dx,-0.1,dy));
-				vUV = uv;
-				vHeight = outheight;
-			}
-		</script>
-		<script type="application/fragmentShader" id="fragmentShaderCode">
-			precision highp float;
-
-			// Varying
-			varying vec3 vPosition;
-			varying vec3 vNormal;
-			varying vec2 vUV;
-			varying float vHeight;
-			//varying vec4 vPositionFromLight0;
-
-			// Uniforms
-			uniform mat4 world;
-			uniform mat4 worldView;
-			//uniform mat4 worldViewProjection;
-
-			// Refs
-			uniform vec3 cameraPosition;
-			uniform vec3 lightPosition;
-			uniform sampler2D textureSampler;
-
-			uniform vec2 depthValues;
-			uniform float debugamt;
-			uniform float time;
-			uniform float amt1;
-			uniform float amt2;
-			uniform sampler2D img1;
-			uniform sampler2D img2;
-
-			float unpack(vec4 color) {
-				const vec4 bit_shift = vec4(1.0 / (255.0 * 255.0 * 255.0), 1.0 / (255.0 * 255.0), 1.0 / 255.0, 1.0);
-				return dot(color, bit_shift);
-			}
-
-			void main(void) {
-				// vec3 vLightPosition = vec3(
-				// 	, // *sin(9.0 * time),
-				// 	0.0, // 3.0,
-				// 	10.0 // 3.0*cos(8.0 * time)
-				// );
-
-				// vec3 vLightPosition = vec3(
-				// 	10.*sin(9.0 * time),
-				// 	0.,
-				// 	10.
-				// 	);
-
-				// vec3 vLightPosition = vec3(
-				// 	10.,
-				// 	10.,
-				// 	10.
-				// );
-
-				//vec3 vLightPosition = light0;
-
-				// World values
-				vec3 vLightPositionW = vec3(worldView * vec4(lightPosition, 1.0));
-				vec3 vPositionW = vec3(worldView * vec4(vPosition, 1.0));
-				vec3 vNormalW = normalize(vec3(worldView * vec4(vNormal, 0.0)));
-
-				vec3 vCameraPositionW = vec3(worldView * vec4(cameraPosition, 1.0));
-				vec3 viewDirectionW = normalize(vPositionW - vCameraPositionW);
-
-				//viewDirectionW.x = viewDirectionW.x + time;
-				// Light
-				vec3 lightVectorW = normalize(vPositionW - vLightPositionW);
-
-				// diffuse
-				float ndl = max(0.0, dot(vNormal, lightVectorW));
-				ndl += 0.4;
-				//float ndl = 1.0;
-
-				//Shadow - brightness
-				// float bri;
-				// vec3 directionToLight = vLightPositionW - vPositionW.xyz;
-
-				// float depth = length(directionToLight)*1000.;
-
-				vec3 color = texture2D(textureSampler, vUV).rgb;
-
-				// Specular
-				vec3 angleW = normalize(viewDirectionW + lightVectorW);
-				float specComp = max(0., dot(vNormalW, angleW));
-				specComp = pow(specComp, 204.0) * 0.5;
-
-				/*if (debugamt > 0.5) {
-					color *= 0.5;
-					color += vec3(vHeight, vHeight, vHeight);
-				}*/
-
-				// float dist = max(0.0, min(1.0, length(vUV - 0.5) * 1.0));
-
-				// color += vNormal;
-
-				float dist = 1.0 * length(0.5 - vUV);
-
-				dist = max(0.0, min(1.0, dist));
-
-				if (dist > 0.4)
-					dist = 1.0 - ((dist - 0.4) * 5.0);
-				else
-					dist = 1.0;
-
-				ndl *= dist;
-//				color.r = dist;
-
-				gl_FragColor = vec4(color * ndl + vec3(specComp), 1.0);
-
-				//gl_FragColor = vec4(vNormalW, 1.0);
-
-			}
-		</script>
-
-		<ul id="buttoncnt"></ul>
-		<p id="coder">
-			<input id="amt1" type="range" /> Layer 1 Amt
-			<input id="amt2" type="range" /> Layer 2 Amt
-			<input id="däbüg" type="checkbox" /> Degaüss
-		</p>
-
-		<canvas id="renderCanvas"></canvas>
-
-
-		<i id="cogs" class="fa fa-cog"></i>
-
-
-		<script src="app.js"></script>
-		<script src="dal.js"></script>
-	</body>
+</style>
+</head>
+<body>
+<div id="logocnt">
+	<a href="http://www.cavagent.com"><img src="res/cavagent.gif"></a><br>
+	<a href="http://www.spotify.com"><img src="res/spotify-logo.png"></a><br>
+	<a href="http://www.sp.se"><img src="res/sp.png"></a>
+</div>
+<div class="burk">
+<a href="inside.html">
+<img src="res/fakearoooo1280.jpg" />
+</a>
+</div>
+</body>
 </html>
