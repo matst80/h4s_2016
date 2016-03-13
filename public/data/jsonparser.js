@@ -189,15 +189,15 @@ function parse(data,parser,ictx,image,multiple) {
 				
 				var pixel = convItem(nd);
 
-				pixel.x -= 5.0;
+				/*pixel.x -= 5.0;
 				pixel.y -= 5.0;
 				pixel.x += 10.0 * Math.random();
-				pixel.y += 10.0 * Math.random();
+				pixel.y += 10.0 * Math.random();*/
 				
 				if (pixel.x>=0 && pixel.x<=imgsize.x && pixel.y>=0 && pixel.y<=imgsize.y) {
 					ret.points.push(pixel);
 					ictx.globalAlpha = multiple;
-					ictx.drawImage(image,pixel.x-128,pixel.y-128,256,256);
+					ictx.drawImage(image,pixel.x-128-5+10.0 * Math.random(),pixel.y-128-5+10.0 * Math.random(),256,256);
 				}
 			//else
 			//	console.log('out of bounds');

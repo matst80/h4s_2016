@@ -214,10 +214,10 @@ window.addEventListener('DOMContentLoaded', function() {
 		}
 		window.updateHeightmap = function(img) {
 			queuedHeightmap = new BABYLON.DynamicTexture("dynamic texture", {
-			 width: 1024,
-			 height: 1024
+				width: 1024,
+				height: 1024
 			}, scene, true);
-			
+
 			queuedPoints = img.data.points;
 			console.log('Updated queuedPoints');
 			var textureContext = queuedHeightmap.getContext();
