@@ -59,16 +59,17 @@ html, body {
 	margin: 0;
 }
 
+
 .burk2 .innerburk2 .burkmenu #buttoncnt li {
 	display: inline-block;
-	margin: 0px;
+	
 	color: #fff;
-	padding: 10px 5px;
+	padding: 10px 18px;
 	border: none;
 	border-radius: 2px;
 	background-color: none;
 	opacity: 0.66;
-	font-size: 13pt;
+	font-size: 15pt;
 	font-family: "Helvetica Neue", Helvetica;
 	cursor: pointer;
 }
@@ -101,8 +102,6 @@ html, body {
 	left:0;
 	top:0;
 	bottom:0;
-	width:25%;
-	background-color: #222;
 	list-style: none;
 }
 
@@ -113,9 +112,10 @@ html, body {
 }
 
 #buttoncnt li {
-	margin:2px;
+	margin:13px 13px;
 	color:#fff;
 	padding:15px 10px;
+	font-size: 30px;
 	border:solid 1px #444;
 	border-radius: 2px;
 	background-color: #222;
@@ -129,6 +129,10 @@ html, body {
 
 #buttoncnt li input {
 	display:none;
+}
+
+#buttoncnt li .fa {
+	margin-right:6px;
 }
 
 #cogs {

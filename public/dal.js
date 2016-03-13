@@ -8,6 +8,15 @@ dd.push(
 		title:'Befolkningstäthet',
 	});
 
+/* No more leifi data
+dd.push(
+	{
+		imgData:'res/avatar.png',
+		points:[],
+		title:'Lefitäthet',
+	});
+*/
+
 
 var imgsize = {
 	x:1024,
@@ -250,7 +259,8 @@ dal.getLayers(function(d) {
 		//var sel = doc.createElement('select');
 		var inp = doc.createElement('input');
 		var span = doc.createElement('span');
-		span.innerHTML = v.title;
+		span.innerHTML = '<i class="fa fa-flag-o" ></i>'+v.title;
+		//span.classList.add();
 		inp.value = v.idx;
 		inp.type = 'checkbox';
 		function updateSelectedLayers(ev) {
