@@ -217,6 +217,9 @@ window.addEventListener('DOMContentLoaded', function() {
 			 width: 1024,
 			 height: 1024
 			}, scene, true);
+			
+			queuedPoints = img.data.points;
+			console.log('Updated queuedPoints');
 			var textureContext = queuedHeightmap.getContext();
 			textureContext.drawImage(img.img,0,0,1024,1024);
 			queuedHeightmap.update();

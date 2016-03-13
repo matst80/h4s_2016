@@ -125,7 +125,7 @@ var dal = {
 	},
 	'calculateDiversity':function(layerData,resultData,cb) {
 		var totlen = layerData[0].layerdata.data.data.length;
-
+		var points = [];
 
 		for(var i=0;i<totlen;i+=4) {
 
@@ -144,7 +144,6 @@ var dal = {
 				layerData.forEach(function(currentLayer) {
 					currentLayer.hdl.init(layerData.length);
 
-
 					layerData.forEach(function(calcLayer) {
 						if (currentLayer.idx!=calcLayer.idx) {
 							//pos.forEach(function(offsetNumber) {
@@ -162,6 +161,7 @@ var dal = {
 
 			var tot = 0;
 			layerData.forEach(function(currentLayer) {
+
 				tot += currentLayer.hdl.getResult();
 			});
 
@@ -177,10 +177,18 @@ var dal = {
 			tot -= Math.random() * 2.0;
 
 			tot = Math.floor(tot);
-
 			resultData.data[i] = tot;
 			resultData.data[i+3] = 255;
 		}
+		layerData.forEach(function(currentLayer) {
+			currentLayer.points.forEach(function(v) {
+				points.push({x:v.x,y:v.y,idx:currentLayer.idx});
+			});
+
+			console.log(currentLayer.points.length);
+			tot += currentLayer.hdl.getResult();
+		});
+		resultData.points = points;
 		cb();
 	},
 	'getDiversity':function(layers,cb) {
@@ -198,6 +206,7 @@ var dal = {
 			v.hdl = new calcFunc[v.type||'+']();
 			dal.getImageData(v.idx,function(layerdata) {
 				idata++;
+				v.points = dd[v.idx].points;
 				v.layerdata = layerdata;
 				if (idata == layers.length) {
 					afterLoad();
