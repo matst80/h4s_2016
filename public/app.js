@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		// create a FreeCamera, and set its position to (x:0, y:5, z:-10)
 		//var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5,-10), scene);
-		var camera = new BABYLON.ArcRotateCamera('camera1', 3.1415/4, 3.1415/4, 14, new BABYLON.Vector3(10, 0, 0), scene);
+		var camera = new BABYLON.ArcRotateCamera('camera1', 3.1415/4, 3.1415/4, 14, new BABYLON.Vector3(0, 0, 0), scene);
 
 		// target the camera to scene origin
 		camera.setTarget(BABYLON.Vector3.Zero());
@@ -22,22 +22,40 @@ window.addEventListener('DOMContentLoaded', function() {
 		// attach the camera to the canvas
 		camera.attachControl(canvas, false);
 
-		camera.minZ = 1.0;
-		camera.lowerBetaLimit = 0.001;
-		camera.upperBetaLimit = 1.2;
+		//camera.minZ = 1.0;
+		//camera.lowerBetaLimit = 0.001;
+		//camera.lowerBetaLimit = 0.001;
+		//camera.upperBetaLimit = 2.0;
+   // Then attach the activeCamera to the canvas.
 
-		var light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(-1, -1, -1), scene);
-		light.position = new BABYLON.Vector3(6, 4, 1);
-		light.intensity = 1.0;
+
+
+		var light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(5, -4, 0), scene);
+		//light.position = new BABYLON.Vector3(-5, 4, 0);
+		light.intensity = 0.4;
+
+		//light.direction = BABYLON.Vector3.Zero().subtract(light.position).normalize();
 
 		var lightSphere = BABYLON.Mesh.CreateSphere("sphere", 10, 2, scene);
 		lightSphere.position = light.position;
 		lightSphere.material = new BABYLON.StandardMaterial("light", scene);
 		lightSphere.material.emissiveColor = new BABYLON.Color3(1, 1, 0);
 
+		var lightSphere = BABYLON.Mesh.CreateSphere("sphere", 13, 2, scene);
+		lightSphere.position = new BABYLON.Vector3(0, 0, 0);;
+		lightSphere.material = new BABYLON.StandardMaterial("light1", scene);
+		lightSphere.material.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+
+
+		// Creation of a lines mesh
+		var lines = BABYLON.Mesh.CreateLines("lines", [
+            new BABYLON.Vector3(0, 0, 0),
+            light.position
+        ], scene);
+
 		// create a built-in "ground" shape; its constructor takes the same 5 params as the sphere's one
-		//var ground = BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, scene);
-		var ground = BABYLON.Mesh.CreateGroundFromHeightMap("mesh", "res/emptyheightmap.png", 10, 10, 500, 0, 10, scene, false)
+		var ground = BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, scene);
+		//var ground = BABYLON.Mesh.CreateGroundFromHeightMap("mesh", "res/emptyheightmap.png", 10, 10, 500, 0, 10, scene, false)
 
 		// Compile
 		var shaderMaterial = new BABYLON.ShaderMaterial("shader", scene, {
@@ -51,7 +69,7 @@ window.addEventListener('DOMContentLoaded', function() {
 				"worldViewProjection",
 				"view", "projection",
 				"amt1", "amt2", "img1",
-				"img2", "lightMatrix0"
+				"img2", "lightMatrix0","light0","cameraPosition","lightPosition"
 			],
 			// needAlphaBlending: true,
 		});
@@ -85,15 +103,24 @@ window.addEventListener('DOMContentLoaded', function() {
 		// material.diffuseTexture = new BABYLON.Texture("res/karta.jpg", scene);
 
 		ground.material = shaderMaterial;
+		//ground.material = new BABYLON.StandardMaterial("light2", scene);
+
+		// shaderMaterial.setMatrix('world', new BABYLON.Matrix.Identity());
+		// shaderMaterial.setMatrix('worldView', new BABYLON.Matrix.Identity());
+		//shaderMaterial.setMatrix('worldViewProjection', new BABYLON.Matrix.Identity());
 
 		// Animations
 		var T = 0;
 		scene.registerBeforeRender(function () {
 			// torus.rotation.x += 0.01;
 			camera.alpha += 0.0003;
+			//ground.rotation.y += 0.003;
+			//scene.activeCamera.alpha += .01;
 
 			// torus.position = new BABYLON.Vector3(Math.cos(alpha) * 30, 20, Math.sin(alpha) * 30);
-			shaderMaterial.setVector3('light0', lightSphere.position);
+			//shaderMaterial.setVector3('light0', lightSphere.position);
+			shaderMaterial.setVector3('lightPosition', light.position);
+			shaderMaterial.setVector3('cameraPosition', camera.position);
 			shaderMaterial.setFloat('amt1', amt1 / 100.0);
 			shaderMaterial.setFloat('amt2', amt2 / 100.0);
 			shaderMaterial.setFloat('debugamt', debugging ? 1.0 : 0.0);
@@ -108,16 +135,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
 			T += 1.0 / 60.0;
 		});
-
-
-
-
-
-
-
-
-
-
 
     // Create a particle system
     var particleSystem = new BABYLON.ParticleSystem("particles", 1000, scene);
@@ -177,9 +194,6 @@ window.addEventListener('DOMContentLoaded', function() {
         var random = Math.random();
         return ((random * (max - min)) + min);
     };
-
-
-
 
 		var fadestate = 'a-visible';
 		var fadetimer = 0.0;
