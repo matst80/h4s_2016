@@ -12,7 +12,7 @@
 The DiverCity app is a celebration to Jane Jacobs theory of city diversity and its connection to city prosperity. Using several Open Data-sources from the Swedish authorities this app visualizes city diversity and the interesting phenomenons that occur where diversity exists.
 
 #Demo
-<b><a href="https://matst80.github.io/h4s_2016/public/">matst80.github.io/h4s_2016/public/</a></b>
+<b><a href="https://matst80.github.io/h4s_2016/public/">https://matst80.github.io/h4s_2016/public/</a></b>
 
 #Technology
 The application uses <a href="https://github.com/BabylonJS/Babylon.js">BabylonJS</a> and WebGL to render datasets in an interactive way. Datasets can be toggled and combined to discover phenomenons in the interaction between the datasets.
