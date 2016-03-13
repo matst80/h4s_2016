@@ -1,6 +1,5 @@
 (function(w,dd,doc) {
 
-var bgimage = new Image();
 
 dd.push(
 	{
@@ -52,7 +51,7 @@ function getData(img,size) {
 function mergeImage(img,cb) {
 	img.ctx.putImageData(img.data,0,0);
 	var ret = (img.img)?img.img:new Image();
-	console.log('do merge');
+	console.log('do merge',img);
 
 	ret.onload = function() {
 		console.log('loaded');
@@ -66,17 +65,17 @@ var calcFunc = {
 	'+':function() {
 			this.init = function(totallayers) {
 				this.total = 0;
-				this.points = 0;
+				this.points = 1;
 				this.layers = totallayers;
 			};
 			this.getResult = function() {
 				return this.total/this.points;
 			};
 			this.pixelDeligate = function(val) {
-				this.total+=val/this.layers;
-				this.points++;
+				this.total+=val;//this.layers;
+				//this.points++;
 			};
-		},
+		}/*,
 	'-':function() {
 			this.init = function(totallayers) {
 				this.total = 0;
@@ -108,7 +107,7 @@ var calcFunc = {
 				this.points+=10;
 				//return val;
 			};
-	}
+	}*/
 };
 
 var dal = {
@@ -146,11 +145,12 @@ var dal = {
 		var totlen = layerData[0].layerdata.data.data.length;
 		var points = [];
 
+
+
 		for(var i=0;i<totlen;i+=4) {
 
-
+/*
 			if (layerData.length == 1) {
-
 				layerData.forEach(function(currentLayer) {
 					var pixelPos = i;
 					if (pixelPos > 0 && pixelPos < totlen) {
@@ -160,43 +160,49 @@ var dal = {
 
 			} else {
 
-				layerData.forEach(function(currentLayer) {
-					currentLayer.hdl.init(layerData.length);
+*/
+			layerData.forEach(function(currentLayer) {
+				currentLayer.hdl.init();
+			});
+			//currentLayer.hdl.init(layerData.length);
+			layerData.forEach(function(currentLayer) {
 
-					layerData.forEach(function(calcLayer) {
-						if (currentLayer.idx!=calcLayer.idx) {
-							//pos.forEach(function(offsetNumber) {
-								var pixelPos = i;// + (offsetNumber * 4);
-								//if (pixelPos > 0 && pixelPos < totlen) {
-									currentLayer.hdl.pixelDeligate(calcLayer.layerdata.data.data[pixelPos]);
-								//}
-							//});
-						}
-					});
 
+				layerData.forEach(function(calcLayer) {
+					if (currentLayer.idx!=calcLayer.idx || layerData.length==1) {
+						//pos.forEach(function(offsetNumber) {
+							var pixelPos = i;// + (offsetNumber * 4);
+							//if (pixelPos > 0 && pixelPos < totlen) {
+								currentLayer.hdl.pixelDeligate(calcLayer.layerdata.data.data[pixelPos]);
+							//}
+						//});
+					}
 				});
 
-			}
+			});
+
+			//}
 
 			var tot = 0;
 			layerData.forEach(function(currentLayer) {
 
 				tot += currentLayer.hdl.getResult();
 			});
-
+/*
 			if (dal.useBackgroundData) {
 				if (bgimage && bgimage.loaded) {
 					var bgdata = getData(bgimage);
 					tot+=bgdata.data.data[i];
 				}
-			}
+			}*/
 			//var tv = Math.round((s/(j)));//Math.max(0,Math.round((s))); //-(255/arr.length)
 
 // tot = 0.0;
 			tot -= Math.random() * 2.0;
 
-			tot = Math.floor(tot);
-			resultData.data[i] = tot;
+			/*if (tot<1)
+				console.log('sklep');*/
+			resultData.data[i] = Math.floor(tot);
 			resultData.data[i+3] = 255;
 		}
 		layerData.forEach(function(currentLayer) {
@@ -204,7 +210,7 @@ var dal = {
 				points.push({x:v.x,y:v.y,idx:currentLayer.idx});
 			});
 
-			console.log(currentLayer.points.length);
+			console.log('hittat punkter i beräkning',currentLayer.points.length);
 			tot += currentLayer.hdl.getResult();
 		});
 		resultData.points = points;
@@ -302,13 +308,15 @@ dal.getLayers(function(d) {
 		bcnt.appendChild(li);
 	});
 });
-bgimage.onload = function() {
-	loaded:true;
+//bgimage.onload = function() {
+//	loaded:true;
+setTimeout(function() {
 	dal.getDiversity([],function(d) {
 		updateHeightmap(d);
 		cogs.classList.remove('fa-spin');
 	});
-}
-bgimage.src = "res/densitet_bitmap.png";
+},500);
+//}
+
 
 })(window,compileddata,document);
