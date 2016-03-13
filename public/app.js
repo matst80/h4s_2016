@@ -22,11 +22,11 @@ window.addEventListener('DOMContentLoaded', function() {
 		// attach the camera to the canvas
 		camera.attachControl(canvas, false);
 
-		//camera.minZ = 1.0;
-		//camera.lowerBetaLimit = 0.001;
-		//camera.lowerBetaLimit = 0.001;
-		//camera.upperBetaLimit = 2.0;
-   // Then attach the activeCamera to the canvas.
+		camera.lowerRadiusLimit = 2;
+		camera.upperRadiusLimit = 15;
+		camera.lowerYLimit = 1.0;
+		camera.lowerBetaLimit = 0.001;
+		camera.upperBetaLimit = Math.PI/2-0.1;
 
 
 
