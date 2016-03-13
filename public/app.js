@@ -36,23 +36,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
 		//light.direction = BABYLON.Vector3.Zero().subtract(light.position).normalize();
 
-		var lightSphere = BABYLON.Mesh.CreateSphere("sphere", 10, 2, scene);
-		lightSphere.position = light.position;
-		lightSphere.material = new BABYLON.StandardMaterial("light", scene);
-		lightSphere.material.emissiveColor = new BABYLON.Color3(1, 1, 0);
-
-		var lightSphere = BABYLON.Mesh.CreateSphere("sphere", 13, 2, scene);
-		lightSphere.position = new BABYLON.Vector3(0, 0, 0);;
-		lightSphere.material = new BABYLON.StandardMaterial("light1", scene);
-		lightSphere.material.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
-
-
-		// Creation of a lines mesh
-		var lines = BABYLON.Mesh.CreateLines("lines", [
-            new BABYLON.Vector3(0, 0, 0),
-            light.position
-        ], scene);
-
 		// create a built-in "ground" shape; its constructor takes the same 5 params as the sphere's one
 		var ground = BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, scene);
 		//var ground = BABYLON.Mesh.CreateGroundFromHeightMap("mesh", "res/emptyheightmap.png", 10, 10, 500, 0, 10, scene, false)
