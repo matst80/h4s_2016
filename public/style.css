@@ -27,23 +27,35 @@ html, body {
 
 #coder {
 	bottom:auto;
+	display:none;
 	top:0;
 }
 
 #buttoncnt li {
 	margin:10px;
+	color:#fff;
 	padding:15px 10px;
-	border:solid 1px #fcfcfc;
+	border:solid 1px #005;
 	border-radius: 2px;
-	background-color: #fff;
+	background-color: #000;
+	transition: all 0.3s ease;
+}
+
+#buttoncnt li.selected {
+	background-color: #ccf;
+	transform: scale(1.1);
+}
+
+#buttoncnt li input {
+	display:none;
 }
 
 #cogs {
 	color: #fff;
 	position: absolute;
-	left:49%;
+	right:10%;
 	font-size: 10em;
-	top:49%;
+	bottom:10%;
 	opacity: 0;
 }
 

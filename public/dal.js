@@ -1,10 +1,20 @@
 (function(w,dd,doc) {
 
 var bgimage = new Image();
-bgimage.onload = function() {
-	loaded:true;
-}
-bgimage.src = "res/densitet_bitmap.png";
+
+dd.push(
+	{
+		imgData:'res/densitet_bitmap.png',
+		points:[],
+		title:'Befolkningstäthet',
+	});
+dd.push(
+	{
+		imgData:'res/avatar.png',
+		points:[],
+		title:'Lefitäthet',
+	});
+
 
 var imgsize = {
 	x:1024,
@@ -108,6 +118,9 @@ var dal = {
 		dd.forEach(function(v,i) {
 			ret.push({title:v.title,idx:i});
 		});
+		/*imageLayers.forEach(function(v,i) {
+			ret.push({title:v.title,idx:i+dd.length,isImage:true});
+		});*/
 		cb(ret);
 	},
 	'getLayer':function(idx,cb) {
@@ -124,6 +137,12 @@ var dal = {
 		});
 	},
 	'calculateDiversity':function(layerData,resultData,cb) {
+		if (layerData.length<1) {
+			console.log('calc nada!');
+			resultData.points = [];
+			cb();
+			return;
+		}
 		var totlen = layerData[0].layerdata.data.data.length;
 		var points = [];
 
@@ -201,18 +220,23 @@ var dal = {
 				mergeImage(resultData,cb);
 			});
 		}
-
-		layers.forEach(function(v) {
-			v.hdl = new calcFunc[v.type||'+']();
-			dal.getImageData(v.idx,function(layerdata) {
-				idata++;
-				v.points = dd[v.idx].points;
-				v.layerdata = layerdata;
-				if (idata == layers.length) {
-					afterLoad();
-				}
-			},divx);
-		});
+		if (layers.length>0) {
+			layers.forEach(function(v) {
+				v.hdl = new calcFunc[v.type||'+']();
+				dal.getImageData(v.idx,function(layerdata) {
+					idata++;
+					v.points = dd[v.idx].points;
+					v.layerdata = layerdata;
+					if (idata == layers.length) {
+						afterLoad();
+					}
+				},divx);
+			});
+		}
+		else {
+			console.log('calc nada getdiv!');
+			afterLoad();
+		}
 	}
 };
 
@@ -230,23 +254,28 @@ dal.getLayers(function(d) {
 		inp.value = v.idx;
 		inp.type = 'checkbox';
 		function updateSelectedLayers(ev) {
-			console.log('vill ha ny data');
+			//console.log('vill ha ny data');
+			if (ev)
+				ev.stopPropagation();
 			if (bouncyBoobs)
 				clearTimeout(bouncyBoobs);
+			var empty = [].filter.call( document.querySelectorAll('input[type=checkbox]'), function( el ) {
+					el.parentNode.classList.toggle('selected',el.checked);
+				   	return el.checked;
+			});
 			bouncyBoobs = setTimeout(function() {
 				cogs.classList.add('fa-spin');
-				console.log('NU GEGERERAR VIU');
-				var empty = [].filter.call( document.querySelectorAll('input[type=checkbox]'), function( el ) {
-					el.parentNode.classList.toggle('selected',el.checked);
-				   return el.checked;
-				});
+				//console.log('NU GEGERERAR VIU');
+
 				var vals = [];
-				empty.forEach(function(v) {
-					if (v.value>0) {
+				empty.forEach(function(elm) {
+					//console.log(elm);
+					//if (elm.value>0) {
 						var type = '+';//v.nextSibling.value;
-						vals.push({idx:d[v.value].idx,type:type});
-					}
+						vals.push({idx:d[elm.value].idx,type:type});
+					//}
 				});
+				//console.log('recalc',vals);
 				dal.getDiversity(vals,function(d) {
 					updateHeightmap(d);
 					cogs.classList.remove('fa-spin');
@@ -254,6 +283,10 @@ dal.getLayers(function(d) {
 			},700);
 		}
 		inp.addEventListener('change',updateSelectedLayers,false);
+		li.addEventListener('click',function() {
+			inp.checked = !inp.checked;
+			updateSelectedLayers();
+		});
 		/*sel.addEventListener('change',updateSelectedLayers,false);
 		for(var i in calcFunc) {
 			var v = calcFunc[i];
@@ -269,10 +302,13 @@ dal.getLayers(function(d) {
 		bcnt.appendChild(li);
 	});
 });
+bgimage.onload = function() {
+	loaded:true;
+	dal.getDiversity([],function(d) {
+		updateHeightmap(d);
+		cogs.classList.remove('fa-spin');
+	});
+}
+bgimage.src = "res/densitet_bitmap.png";
 
-dal.getDiversity([{idx:0,type:'*'},{idx:0,type:'*'},{idx:0,type:''}],function(d) {
-	console.log(d);
-	updateHeightmap(d);
-	document.body.appendChild(d.img);
-});
 })(window,compileddata,document);
