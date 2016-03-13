@@ -259,7 +259,7 @@ dal.getLayers(function(d) {
 		//var sel = doc.createElement('select');
 		var inp = doc.createElement('input');
 		var span = doc.createElement('span');
-		span.innerHTML = '<i class="fa fa-flag-o" ></i>'+v.title;
+		span.innerHTML = v.title;
 		//span.classList.add();
 		inp.value = v.idx;
 		inp.type = 'checkbox';
