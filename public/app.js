@@ -119,6 +119,66 @@ window.addEventListener('DOMContentLoaded', function() {
 
 
 
+    // Create a particle system
+    var particleSystem = new BABYLON.ParticleSystem("particles", 1000, scene);
+
+    //Texture of each particle
+    particleSystem.particleTexture = new BABYLON.Texture("res/flaaaaar.png", scene);
+
+    // Where the particles come from
+    particleSystem.emitter = ground; // the starting object, the emitter
+    particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0); // Starting all from
+    particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0); // To...
+
+    // Colors of all particles
+    particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+    particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+    particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+
+    // Size of each particle (random between...
+    particleSystem.minSize = 0.1;
+    particleSystem.maxSize = 0.5;
+
+    // Life time of each particle (random between...
+    particleSystem.minLifeTime = 0.3;
+    particleSystem.maxLifeTime = 1.5;
+
+    // Emission rate
+    particleSystem.emitRate = 0;
+
+    // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+    particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+    // Set the gravity of all particles
+    particleSystem.gravity = new BABYLON.Vector3(0, 0, 0);
+
+    // Direction of each particle after it has been emitted
+    particleSystem.direction1 = new BABYLON.Vector3(-7, 8, 3);
+    particleSystem.direction2 = new BABYLON.Vector3(7, 8, -3);
+
+    // Angular speed, in radians
+    particleSystem.minAngularSpeed = 0;
+    particleSystem.maxAngularSpeed = Math.PI;
+
+
+    // Speed
+    particleSystem.minEmitPower = 1;
+    particleSystem.maxEmitPower = 3;
+    particleSystem.updateSpeed = 0.005;
+
+    // Start the particle system
+    particleSystem.start();
+
+     var randomNumber = function (min, max) {
+        if (min === max) {
+            return (min);
+        }
+        var random = Math.random();
+        return ((random * (max - min)) + min);
+    };
+
+
+
 
 		var fadestate = 'a-visible';
 		var fadetimer = 0.0;
@@ -150,6 +210,47 @@ window.addEventListener('DOMContentLoaded', function() {
 
 					fadestate = 'b-fading-in';
 					fadetimer = 0.0;
+				}
+
+				if (queuedPoints) {
+
+
+
+
+					particleSystem.particles = [];
+
+					queuedPoints.forEach(function(p) {
+						// console.log(Math.round(p.x), Math.round(p.y));
+						var worldMatrix = BABYLON.Matrix.Translation(
+							-5.0 + 10.0 * p.x / 1024.0,
+							0,
+							5.0 - 10.0 * p.y / 1024.0);
+
+						var particle = new BABYLON.Particle();
+						particleSystem.particles.push(particle);
+
+						var emitPower = 0.0;// randomNumber(particleSystem.minEmitPower, particleSystem.maxEmitPower);
+
+						particleSystem.startDirectionFunction(emitPower, worldMatrix, particle.direction, particle);
+
+						particle.lifeTime = 99999.0; // randomNumber(particleSystem.minLifeTime, particleSystem.maxLifeTime);
+						particle.size = 3.2;// randomNumber(particleSystem.minSize, particleSystem.maxSize);
+						particle.angularSpeed = 0.0;//  randomNumber(particleSystem.minAngularSpeed, particleSystem.maxAngularSpeed);
+						particleSystem.startPositionFunction(worldMatrix, particle.position, particle);
+
+						particle.color = new BABYLON.Color4(1,0,1,1);
+
+						particleSystem.colorDead.subtractToRef(particle.color, particleSystem._colorDiff);
+						particleSystem._colorDiff.scaleToRef(1.0 / particle.lifeTime, particle.colorStep);
+
+
+
+
+
+					});
+					queuedPoints = null;
+
+					// skaapa
 				}
 
 			} else if (fadestate == 'b-fading-in') {
@@ -205,6 +306,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
 
 		var queuedHeightmap = null;
+		var queuedPoints = null;
 		var currentHeightmap = null;
 		var lastHeightmap = null;
 
@@ -219,7 +321,7 @@ window.addEventListener('DOMContentLoaded', function() {
 			}, scene, true);
 
 			queuedPoints = img.data.points;
-			console.log('Updated queuedPoints');
+			console.log('Updated queuedPoints', queuedPoints);
 			var textureContext = queuedHeightmap.getContext();
 			textureContext.drawImage(img.img,0,0,1024,1024);
 			queuedHeightmap.update();
@@ -351,92 +453,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-
-
-
-
-    // Create a particle system
-    var particleSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
-
-    //Texture of each particle
-    particleSystem.particleTexture = new BABYLON.Texture("res/flaaaaar.png", scene);
-
-    // Where the particles come from
-    particleSystem.emitter = ground; // the starting object, the emitter
-    particleSystem.minEmitBox = new BABYLON.Vector3(-1, 0, 0); // Starting all from
-    particleSystem.maxEmitBox = new BABYLON.Vector3(1, 0, 0); // To...
-
-    // Colors of all particles
-    particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
-    particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
-    particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
-
-    // Size of each particle (random between...
-    particleSystem.minSize = 0.1;
-    particleSystem.maxSize = 0.5;
-
-    // Life time of each particle (random between...
-    particleSystem.minLifeTime = 0.3;
-    particleSystem.maxLifeTime = 1.5;
-
-    // Emission rate
-    particleSystem.emitRate = 0;
-
-    // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
-    particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
-
-    // Set the gravity of all particles
-    particleSystem.gravity = new BABYLON.Vector3(0, 0, 0);
-
-    // Direction of each particle after it has been emitted
-    particleSystem.direction1 = new BABYLON.Vector3(-7, 8, 3);
-    particleSystem.direction2 = new BABYLON.Vector3(7, 8, -3);
-
-    // Angular speed, in radians
-    particleSystem.minAngularSpeed = 0;
-    particleSystem.maxAngularSpeed = Math.PI;
-
-
-    // Speed
-    particleSystem.minEmitPower = 1;
-    particleSystem.maxEmitPower = 3;
-    particleSystem.updateSpeed = 0.005;
-
-    // Start the particle system
-    particleSystem.start();
-
-     var randomNumber = function (min, max) {
-        if (min === max) {
-            return (min);
-        }
-        var random = Math.random();
-        return ((random * (max - min)) + min);
-    };
-
-    setInterval(function() {
-
-    	if( Math.random() <  0.02)
-particleSystem.particles = [];
-
-		var  worldMatrix = BABYLON.Matrix.Translation(-10.0 + Math.random() * 20, 0, -10.0 + Math.random() * 20);
-			var particle = new BABYLON.Particle();
-                particleSystem.particles.push(particle);
-                var emitPower = 0.0;// randomNumber(particleSystem.minEmitPower, particleSystem.maxEmitPower);
-                particleSystem.startDirectionFunction(emitPower, worldMatrix, particle.direction, particle);
-                particle.lifeTime = 99999.0; // randomNumber(particleSystem.minLifeTime, particleSystem.maxLifeTime);
-                particle.size = 6.0;// randomNumber(particleSystem.minSize, particleSystem.maxSize);
-                particle.angularSpeed = 0.0;//  randomNumber(particleSystem.minAngularSpeed, particleSystem.maxAngularSpeed);
-                particleSystem.startPositionFunction(worldMatrix, particle.position, particle);
-                var step = randomNumber(0, 1.0);
-                BABYLON.Color4.LerpToRef(particleSystem.color1, particleSystem.color2, step, particle.color);
-
-			particle.color = new BABYLON.Color4(1,0,1,1);
-
-                particleSystem.colorDead.subtractToRef(particle.color, particleSystem._colorDiff);
-                particleSystem._colorDiff.scaleToRef(1.0 / particle.lifeTime, particle.colorStep);
-
-    }, 50);
 
 
 
