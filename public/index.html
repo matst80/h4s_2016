@@ -60,7 +60,7 @@ body {
 #logocnt #logodiv img {
 	max-width: 110px;
 	max-height: 70px;
-	margin:15px 0;
+	margin:0px;
 	z-index: 100;
 	padding-bottom: 30px;
 	padding-left: 15px;
@@ -70,7 +70,14 @@ body {
 #logodiv {
 	position: absolute;
 	bottom: 0px;
-	left: 110px;
+	width: 100%;
+	left: 0px;
+	margin: 0 auto 0 auto;
+	text-align: center;
+}
+
+#logodiv div {
+	display: inline-block;
 }
 
 #logocnt span {
@@ -94,9 +101,15 @@ body {
 	</div>
 	<img src="res/text2.png" style="width: 100% !important">
 	<div id="logodiv">
-	<a href="http://www.cavagent.com" style="position: relative; bottom: 28px"><img src="res/cavagent.gif"></a>
-	<a href="http://www.spotify.com"><img src="res/spotify-logo.png"></a>
-	<a href="http://www.sp.se"><img src="res/sp.png"></a>
+		<div id="spot">
+			<a href="http://www.spotify.com"><img src="res/spotify-logo.png" style="margin: auto"></a>
+		</div>
+		<div id="cava">
+			<a href="http://www.cavagent.com" style="position: relative; bottom: 28px"><img src="res/cavagent.gif"></a>
+		</div>
+		<div id="sp">
+			<a href="http://www.sp.se"><img src="res/sp.png" style="float: left"></a>
+		</div>
 	</div>
 </div>
 <div class="burk">
