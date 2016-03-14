@@ -27,7 +27,7 @@ The application uses <a href="https://github.com/BabylonJS/Babylon.js">BabylonJS
 #Data sources
 1. FourSquare - Restaurants, Coffée shops, Boutiques etc.
 2. Facebook - Events
-3. Tillväxtverket - Retail, Gas stations
+3. Tillväxtanalys - Retail, Gas stations
 4. Trafikverket - Traffic accidents
 5. Stockholms stad - Population density
 
